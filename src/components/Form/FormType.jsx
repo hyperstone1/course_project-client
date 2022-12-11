@@ -6,8 +6,7 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import { useSelector, useDispatch } from 'react-redux';
 import { setLogin } from '../../store/slices/auth/authSlice';
 import { useNavigate } from 'react-router-dom';
-import { AiFillGoogleCircle, AiFillTwitterCircle } from 'react-icons/ai';
-import { FaFacebook, FaGoogle, FaTwitter } from 'react-icons/fa';
+import { FaFacebook, FaTwitter } from 'react-icons/fa';
 import './index.scss';
 import { SiVk } from 'react-icons/si';
 import { popoverPass } from '../../utils/passHint';
@@ -15,11 +14,12 @@ import { popoverEmail } from '../../utils/emailHint';
 import { IoKey } from 'react-icons/io5';
 import { MdAlternateEmail } from 'react-icons/md';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
+import axios from 'axios';
+import { host } from '../../utils/constants';
 
 const FormType = () => {
   const [form, setForm] = useState({});
   const [errors, setErrors] = useState({});
-  const [passInfo, setPassInfo] = useState(false);
   const [showPass, setShowPass] = useState(false);
   const isLogin = useSelector((state) => state.auth.isLogin);
 
@@ -74,6 +74,11 @@ const FormType = () => {
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
     } else {
+      if (isLogin) {
+        axios.post(`${host}/api/user/login`);
+      } else {
+        axios.post(`${host}/api/user/registration`);
+      }
       console.log('form submitted');
     }
 
@@ -117,10 +122,7 @@ const FormType = () => {
             <Form.Label>Password</Form.Label>
             <InputGroup className="mb-2">
               <OverlayTrigger trigger="click" placement="left" overlay={popoverPass}>
-                <InputGroup.Text
-                  onMouseEnter={() => setPassInfo(true)}
-                  style={{ cursor: 'pointer' }}
-                >
+                <InputGroup.Text style={{ cursor: 'pointer' }}>
                   <IoKey style={{ width: '20px', height: '20px' }} />
                 </InputGroup.Text>
               </OverlayTrigger>
