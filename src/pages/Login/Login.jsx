@@ -1,37 +1,18 @@
-import React from 'react';
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import './Login.scss';
-
+import React, { useState, useEffect } from 'react';
+import FormType from '../../components/Form/FormType';
+import { useDispatch, useSelector } from 'react-redux';
+import { setLogin, setRegister } from '../../store/slices/auth/authSlice';
+import { FaUserTie } from 'react-icons/fa';
 const Login = () => {
   return (
-    <div className="login_container">
+    <div className="login_register_container">
       <div className="container_center">
-        <h2>Authorization</h2>
-        <Form>
-          <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Label>Email address</Form.Label>
-            <Form.Control type="email" placeholder="Enter email" />
-            <Form.Text className="text-muted">
-              We'll never share your email with anyone else.
-            </Form.Text>
-          </Form.Group>
+        <div className="icon">
+          <FaUserTie />
+        </div>
 
-          <Form.Group className="mb-3" controlId="formBasicPassword">
-            <Form.Label>Password</Form.Label>
-            <Form.Control type="password" placeholder="Password" />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formBasicCheckbox">
-            <Form.Check type="checkbox" label="Check me out" />
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Label>You are already have an account?</Form.Label>
-          </Form.Group>
-          <Button variant="primary" type="submit">
-            Sign In
-          </Button>
-        </Form>
+        <h2>Login</h2>
+        <FormType style={{ margin: '0 auto' }} />
       </div>
     </div>
   );
