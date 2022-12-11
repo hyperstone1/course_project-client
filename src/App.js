@@ -6,6 +6,7 @@ import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home/Home';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLogin } from './store/slices/auth/authSlice';
+import Profile from './pages/Profile/Profile';
 
 function App() {
   const isLogin = useSelector((state) => state.auth.isLogin);
@@ -27,6 +28,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/register" element={<Registration />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </div>
     </div>

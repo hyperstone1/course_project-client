@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Navigate } from 'react-router-dom';
-
+import { useAuth } from '../../hooks/use-auth';
 const Home = () => {
-  const [isAuth, setIsAuth] = useState(false);
+  const { isAuth } = useAuth();
   return isAuth ? <Navigate to="/profile" /> : <Navigate to="/login" />;
 };
 
