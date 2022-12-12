@@ -1,0 +1,35 @@
+.profile_container {
+  display: flex;
+  flex-direction: row;
+  margin-top: 100px;
+  .nav_profile {
+    width: 30%;
+    border-right: 1px solid #e9ecef;
+    .nav {
+      margin-top: 67px;
+      border-bottom: none;
+      .nav-item {
+        .nav-link {
+          padding-top: 20px;
+          padding-bottom: 20px;
+        }
+        .nav-link.active {
+          position: relative;
+          border-right: 1px solid #fff;
+          border-bottom: 1px solid #e9ecef;
+          border-top-right-radius: 0px;
+          border-bottom-left-radius: 5px;
+          &::after {
+            position: absolute;
+            content: '';
+            top: 0;
+            right: -3px;
+            background-color: #fff;
+            height: 99%;
+            width: 5px;
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,9 +1,14 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
-import { useAuth } from '../../hooks/use-auth';
+import Feed from '../Feed/Feed';
+import Header from '../../components/Header/Header';
 const Home = () => {
-  const { isAuth } = useAuth();
-  return isAuth ? <Navigate to="/profile" /> : <Navigate to="/login" />;
+
+  return (
+    <div className="container">
+      <Header />
+      <Feed />
+    </div>
+  );
 };
 
 export default Home;

@@ -6,7 +6,7 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import { useSelector, useDispatch } from 'react-redux';
 import { setLogin } from '../../store/slices/auth/authSlice';
 import { useNavigate } from 'react-router-dom';
-import { FaFacebook, FaTwitter } from 'react-icons/fa';
+import { FaFacebook, FaTwitter, FaUserAlt } from 'react-icons/fa';
 import './index.scss';
 import { SiVk } from 'react-icons/si';
 import { popoverPass } from '../../utils/passHint';
@@ -14,9 +14,9 @@ import { popoverEmail } from '../../utils/emailHint';
 import { IoKey } from 'react-icons/io5';
 import { MdAlternateEmail } from 'react-icons/md';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
-import axios from 'axios';
-import { host } from '../../utils/constants';
 import { setUser } from '../../store/slices/user/userSlice';
+import { login, registration } from '../../http/userAPI';
+import Swal from 'sweetalert2';
 
 const FormType = () => {
   const [form, setForm] = useState({});
@@ -52,18 +52,15 @@ const FormType = () => {
   const validateForm = () => {
     const { name, email, pass } = form;
     const newErrors = {};
-    if (name) {
-    } else {
-      if (!email || email === '') newErrors.email = 'Please enter your email';
-      else if (
-        !email.match(/^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/)
-      ) {
-        newErrors.email = 'Invalid email';
-      }
-      if (!pass || pass === '') newErrors.pass = 'Please enter your pass';
-      else if (!pass.match(/^(?=.*[a-zA-Z])(?=.*[0-9]).{6,20}/g)) {
-        newErrors.pass = 'Invalid password';
-      }
+    if (!email || email === '') newErrors.email = 'Please enter your email';
+    else if (
+      !email.match(/^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/)
+    ) {
+      newErrors.email = 'Invalid email';
+    }
+    if (!pass || pass === '') newErrors.pass = 'Please enter your pass';
+    else if (!pass.match(/^(?=.*[a-zA-Z])(?=.*[0-9]).{6,20}/g)) {
+      newErrors.pass = 'Invalid password';
     }
     return newErrors;
   };
@@ -71,33 +68,53 @@ const FormType = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formErrors = validateForm();
-
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
     } else {
       if (isLogin) {
-        const response = await axios.post(`${host}/api/user/login`, {
-          email: form.email,
-          password: form.pass,
-        });
-        localStorage.setItem('email', response.email);
-        const token = localStorage.getItem('token');
-        dispatch(setUser({ email: response.email, id: response.id, token, name: response.name }));
+        try {
+          const response = await login(form.email, form.pass);
+          localStorage.setItem('email', response.email);
+          const token = localStorage.getItem('token');
+          dispatch(setUser({ email: response.email, id: response.id, token, name: response.name }));
+          Swal.fire({
+            icon: 'success',
+            text: 'You have successfully logged',
+            showConfirmButton: false,
+            timer: 2000,
+          });
+          navigate('/profile');
+        } catch ({ response }) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: `${response.data.message}`,
+          });
+        }
       } else {
-        const response = await axios.post(`${host}/api/user/registration`, {
-          name: form.name,
-          email: form.email,
-          password: form.pass,
-        });
-        localStorage.setItem('email', response.email);
-        const token = localStorage.getItem('token');
-        dispatch(setUser({ email: response.email, id: response.id, token, name: response.name }));
+        try {
+          const response = await registration(form.name, form.email, form.pass);
+          localStorage.setItem('email', response.email);
+          const token = localStorage.getItem('token');
+          dispatch(setUser({ email: response.email, id: response.id, token, name: response.name }));
+          Swal.fire({
+            icon: 'success',
+            text: 'You have successfully logged',
+            showConfirmButton: false,
+            timer: 2000,
+          });
+          navigate('/profile');
+        } catch ({ response }) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: `${response.data.message}`,
+          });
+          console.log(response);
+        }
       }
       console.log('form submitted');
     }
-
-    console.log(errors.email);
-    console.log(errors.pass);
     console.log(form);
   };
 
@@ -115,64 +132,54 @@ const FormType = () => {
         <>
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Email address</Form.Label>
-            <InputGroup className="mb-2">
-              <OverlayTrigger trigger="click" placement="left" overlay={popoverEmail}>
-                <InputGroup.Text style={{ cursor: 'pointer' }}>
-                  <MdAlternateEmail style={{ width: '20px', height: '20px' }} />
-                </InputGroup.Text>
-              </OverlayTrigger>
-              <Form.Control
-                className={!!errors.email && 'red-border'}
-                value={form.email}
-                onChange={(e) => setField('email', e.target.value)}
-                type="email"
-                placeholder="Enter email"
-                isInvalid={!!errors.email}
-              />
-              <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
-            </InputGroup>
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formBasicPassword">
-            <Form.Label>Password</Form.Label>
-            <InputGroup className="mb-2">
-              <OverlayTrigger trigger="click" placement="left" overlay={popoverPass}>
-                <InputGroup.Text style={{ cursor: 'pointer' }}>
-                  <IoKey style={{ width: '20px', height: '20px' }} />
-                </InputGroup.Text>
-              </OverlayTrigger>
-              <Form.Control
-                value={form.pass}
-                onChange={(e) => setField('pass', e.target.value)}
-                type={showPass ? 'text' : 'password'}
-                placeholder="Password"
-                isInvalid={!!errors.pass}
-              />
-              {showPass ? (
-                <AiFillEyeInvisible
-                  style={{
-                    position: 'absolute',
-                    top: '10px',
-                    right: '10px',
-                    width: '20px',
-                    height: '20px',
-                  }}
-                  onClick={handleShowPass}
-                />
-              ) : (
-                <AiFillEye
-                  style={{
-                    position: 'absolute',
-                    top: '10px',
-                    right: '10px',
-                    width: '20px',
-                    height: '20px',
-                  }}
-                  onClick={handleShowPass}
-                />
-              )}
 
-              <Form.Control.Feedback type="invalid">{errors.pass}</Form.Control.Feedback>
-            </InputGroup>
+            <Form.Control
+              className={!!errors.email && 'red-border'}
+              value={form.email}
+              onChange={(e) => setField('email', e.target.value)}
+              type="email"
+              placeholder="Enter email"
+              isInvalid={!!errors.email}
+            />
+            <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
+          </Form.Group>
+          <Form.Group
+            style={{ position: 'relative' }}
+            className="mb-3"
+            controlId="formBasicPassword"
+          >
+            <Form.Label>Password</Form.Label>
+
+            <Form.Control
+              value={form.pass}
+              onChange={(e) => setField('pass', e.target.value)}
+              type={showPass ? 'text' : 'password'}
+              placeholder="Password"
+              isInvalid={!!errors.pass}
+            />
+            {showPass ? (
+              <AiFillEyeInvisible
+                style={{
+                  position: 'absolute',
+                  top: '42px',
+                  right: '10px',
+                  width: '20px',
+                  height: '20px',
+                }}
+                onClick={handleShowPass}
+              />
+            ) : (
+              <AiFillEye
+                style={{
+                  position: 'absolute',
+                  top: '42px',
+                  right: '10px',
+                  width: '20px',
+                  height: '20px',
+                }}
+                onClick={handleShowPass}
+              />
+            )}
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="formBasicCheckbox">
@@ -219,40 +226,86 @@ const FormType = () => {
         <>
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Name</Form.Label>
-            <Form.Control
-              value={form.name}
-              onChange={(e) => setField('name', e.target.value)}
-              type="text"
-              placeholder="Enter your name"
-            />
+            <InputGroup className="mb-2">
+              <InputGroup.Text>
+                <FaUserAlt style={{ width: '20px', height: '20px' }} />
+              </InputGroup.Text>
+              <Form.Control
+                value={form.name}
+                onChange={(e) => setField('name', e.target.value)}
+                type="text"
+                placeholder="Enter your name"
+                isInvalid={!!errors.name}
+              />
+            </InputGroup>
             <Form.Text className="text-muted"></Form.Text>
           </Form.Group>
           <Form.Control.Feedback type="invalid">{errors.name}</Form.Control.Feedback>
 
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Email address</Form.Label>
-            <Form.Control
-              value={form.email}
-              onChange={(e) => setField('email', e.target.value)}
-              type="email"
-              placeholder="Enter your email"
-            />
+            <InputGroup className="mb-2">
+              <OverlayTrigger trigger="click" placement="left" overlay={popoverEmail}>
+                <InputGroup.Text style={{ cursor: 'pointer' }}>
+                  <MdAlternateEmail style={{ width: '20px', height: '20px' }} />
+                </InputGroup.Text>
+              </OverlayTrigger>
+              <Form.Control
+                value={form.email}
+                onChange={(e) => setField('email', e.target.value)}
+                type="email"
+                placeholder="Enter your email"
+                isInvalid={!!errors.email}
+              />
+              <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
+            </InputGroup>
+
             <Form.Text className="text-muted">
               We'll never share your email with anyone else.
             </Form.Text>
           </Form.Group>
-          <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
 
           <Form.Group className="mb-3" controlId="formBasicPassword">
             <Form.Label>Password</Form.Label>
-            <Form.Control
-              value={form.pass}
-              onChange={(e) => setField('pass', e.target.value)}
-              type="password"
-              placeholder="Password"
-            />
+            <InputGroup className="mb-2">
+              <OverlayTrigger trigger="click" placement="left" overlay={popoverPass}>
+                <InputGroup.Text style={{ cursor: 'pointer' }}>
+                  <IoKey style={{ width: '20px', height: '20px' }} />
+                </InputGroup.Text>
+              </OverlayTrigger>
+              <Form.Control
+                value={form.pass}
+                onChange={(e) => setField('pass', e.target.value)}
+                type={showPass ? 'text' : 'password'}
+                placeholder="Password"
+                isInvalid={!!errors.pass}
+              />
+              {showPass ? (
+                <AiFillEyeInvisible
+                  style={{
+                    position: 'absolute',
+                    top: '10px',
+                    right: '10px',
+                    width: '20px',
+                    height: '20px',
+                  }}
+                  onClick={handleShowPass}
+                />
+              ) : (
+                <AiFillEye
+                  style={{
+                    position: 'absolute',
+                    top: '10px',
+                    right: '10px',
+                    width: '20px',
+                    height: '20px',
+                  }}
+                  onClick={handleShowPass}
+                />
+              )}
+              <Form.Control.Feedback type="invalid">{errors.pass}</Form.Control.Feedback>
+            </InputGroup>
           </Form.Group>
-          <Form.Control.Feedback type="invalid">{errors.pass}</Form.Control.Feedback>
 
           <Form.Group className="mb-3" controlId="formBasicCheckbox">
             <Form.Check type="checkbox" label="Check me out" />
