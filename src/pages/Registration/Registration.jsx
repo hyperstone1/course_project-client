@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import FormType from '../../components/Form/FormType';
 import { FaUserTie } from 'react-icons/fa';
 

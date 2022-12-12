@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import FormType from '../../components/Form/FormType';
-import { useDispatch, useSelector } from 'react-redux';
-import { setLogin, setRegister } from '../../store/slices/auth/authSlice';
 import { FaUserTie } from 'react-icons/fa';
+
 const Login = () => {
   return (
     <div className="login_register_container">

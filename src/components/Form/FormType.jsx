@@ -16,6 +16,7 @@ import { MdAlternateEmail } from 'react-icons/md';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 import axios from 'axios';
 import { host } from '../../utils/constants';
+import { setUser } from '../../store/slices/user/userSlice';
 
 const FormType = () => {
   const [form, setForm] = useState({});
@@ -67,7 +68,7 @@ const FormType = () => {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const formErrors = validateForm();
 
@@ -75,9 +76,22 @@ const FormType = () => {
       setErrors(formErrors);
     } else {
       if (isLogin) {
-        axios.post(`${host}/api/user/login`);
+        const response = await axios.post(`${host}/api/user/login`, {
+          email: form.email,
+          password: form.pass,
+        });
+        localStorage.setItem('email', response.email);
+        const token = localStorage.getItem('token');
+        dispatch(setUser({ email: response.email, id: response.id, token, name: response.name }));
       } else {
-        axios.post(`${host}/api/user/registration`);
+        const response = await axios.post(`${host}/api/user/registration`, {
+          name: form.name,
+          email: form.email,
+          password: form.pass,
+        });
+        localStorage.setItem('email', response.email);
+        const token = localStorage.getItem('token');
+        dispatch(setUser({ email: response.email, id: response.id, token, name: response.name }));
       }
       console.log('form submitted');
     }
@@ -208,7 +222,7 @@ const FormType = () => {
             <Form.Control
               value={form.name}
               onChange={(e) => setField('name', e.target.value)}
-              type="email"
+              type="text"
               placeholder="Enter your name"
             />
             <Form.Text className="text-muted"></Form.Text>
@@ -244,7 +258,7 @@ const FormType = () => {
             <Form.Check type="checkbox" label="Check me out" />
           </Form.Group>
 
-          <Button variant="primary" type="submit">
+          <Button onClick={handleSubmit} variant="primary" type="submit">
             Sign Up
           </Button>
 
