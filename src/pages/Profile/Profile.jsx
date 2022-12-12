@@ -11,7 +11,7 @@ const Profile = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    !isAuth && navigate('/login');
+    !isAuth && navigate('/');
   }, [isAuth, navigate]);
   return (
     <div className="container">
