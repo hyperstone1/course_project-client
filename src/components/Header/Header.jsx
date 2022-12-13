@@ -50,21 +50,23 @@ const Header = () => {
               title={
                 lang === 'ru' ? (
                   <div>
-                    <img style={{ width: '20px', height: '20px' }} src={flagRus} /> ru
+                    <img style={{ width: '20px', height: '20px' }} src={flagRus} alt="flag rus" />{' '}
+                    ru
                   </div>
                 ) : (
                   <div>
-                    <img style={{ width: '20px', height: '20px' }} src={flagUsa} /> eng
+                    <img style={{ width: '20px', height: '20px' }} src={flagUsa} alt="flag usa" />{' '}
+                    eng
                   </div>
                 )
               }
               id="navbarScrollingDropdown"
             >
               <NavDropdown.Item onClick={() => dispatch(setLang({ language: 'ru' }))}>
-                <img style={{ width: '20px', height: '20px' }} src={flagRus} /> ru
+                <img style={{ width: '20px', height: '20px' }} src={flagRus} alt="flag rus" /> ru
               </NavDropdown.Item>
               <NavDropdown.Item onClick={() => dispatch(setLang({ language: 'eng' }))}>
-                <img style={{ width: '20px', height: '20px' }} src={flagUsa} /> eng
+                <img style={{ width: '20px', height: '20px' }} src={flagUsa} alt="flag usa" /> eng
               </NavDropdown.Item>
             </NavDropdown>
             <NavDropdown style={{ marginRight: '40px' }} title="theme" id="navbarScrollingDropdown">
