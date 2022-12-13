@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  menuValue: 'personal information',
+  menuValue: 'info',
 };
 
 const profileSlice = createSlice({
