@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
@@ -8,9 +8,19 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import { FaRegUserCircle } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import './index.scss';
+import flagUsa from '../../images/united-states-flag-icon.svg';
+import flagRus from '../../images/russia-flag-icon.svg';
+import { useSelector, useDispatch } from 'react-redux';
+import { setLang } from '../../store/slices/langSlice/langSlice';
 
 const Header = () => {
+  const dispatch = useDispatch();
+  const lang = useSelector((state) => state.lang.language);
   const [clickUser, setClickUser] = useState();
+
+  useEffect(() => {
+    console.log(lang);
+  }, [lang]);
 
   const handleClickUser = () => {
     setClickUser(!clickUser);
@@ -36,6 +46,31 @@ const Header = () => {
             <Button variant="outline-success">Search</Button>
           </Form>
           <Nav style={{ marginLeft: '50px' }}>
+            <NavDropdown
+              title={
+                lang === 'ru' ? (
+                  <div>
+                    <img style={{ width: '20px', height: '20px' }} src={flagRus} /> ru
+                  </div>
+                ) : (
+                  <div>
+                    <img style={{ width: '20px', height: '20px' }} src={flagUsa} /> eng
+                  </div>
+                )
+              }
+              id="navbarScrollingDropdown"
+            >
+              <NavDropdown.Item onClick={() => dispatch(setLang({ language: 'ru' }))}>
+                <img style={{ width: '20px', height: '20px' }} src={flagRus} /> ru
+              </NavDropdown.Item>
+              <NavDropdown.Item onClick={() => dispatch(setLang({ language: 'eng' }))}>
+                <img style={{ width: '20px', height: '20px' }} src={flagUsa} /> eng
+              </NavDropdown.Item>
+            </NavDropdown>
+            <NavDropdown style={{ marginRight: '40px' }} title="theme" id="navbarScrollingDropdown">
+              <NavDropdown.Item>light</NavDropdown.Item>
+              <NavDropdown.Item>dark</NavDropdown.Item>
+            </NavDropdown>
             <FaRegUserCircle
               style={{ position: 'relative', top: '5px', width: '30px', height: '30px' }}
             />
