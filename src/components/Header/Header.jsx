@@ -11,11 +11,13 @@ import './index.scss';
 import flagUsa from '../../images/united-states-flag-icon.svg';
 import flagRus from '../../images/russia-flag-icon.svg';
 import { useSelector, useDispatch } from 'react-redux';
-import { setLang } from '../../store/slices/langSlice/langSlice';
+import { setLang, setTheme } from '../../store/slices/headerSlice/headerSlice';
+import { RiPaletteLine, RiPaletteFill } from 'react-icons/ri';
 
 const Header = () => {
   const dispatch = useDispatch();
-  const lang = useSelector((state) => state.lang.language);
+  const lang = useSelector((state) => state.header.language);
+  const theme = useSelector((state) => state.header.theme);
   const [clickUser, setClickUser] = useState();
 
   useEffect(() => {
@@ -29,8 +31,8 @@ const Header = () => {
   return (
     <Navbar id="header" bg="light" expand="lg">
       <Container fluid>
-        <Link to="/">
-          <Navbar.Brand href="#">HonestlyCO</Navbar.Brand>
+        <Link className="brand_link" to="/">
+          <Navbar.Brand>HonestlyCO</Navbar.Brand>
         </Link>
         <Navbar.Toggle aria-controls="navbarScroll" />
         <Navbar.Collapse id="navbarScroll">
@@ -56,7 +58,7 @@ const Header = () => {
                 ) : (
                   <div>
                     <img style={{ width: '20px', height: '20px' }} src={flagUsa} alt="flag usa" />{' '}
-                    eng
+                    en
                   </div>
                 )
               }
@@ -66,19 +68,40 @@ const Header = () => {
                 <img style={{ width: '20px', height: '20px' }} src={flagRus} alt="flag rus" /> ru
               </NavDropdown.Item>
               <NavDropdown.Item onClick={() => dispatch(setLang({ language: 'eng' }))}>
-                <img style={{ width: '20px', height: '20px' }} src={flagUsa} alt="flag usa" /> eng
+                <img style={{ width: '20px', height: '20px' }} src={flagUsa} alt="flag usa" /> en
               </NavDropdown.Item>
             </NavDropdown>
-            <NavDropdown style={{ marginRight: '40px' }} title="theme" id="navbarScrollingDropdown">
-              <NavDropdown.Item>light</NavDropdown.Item>
-              <NavDropdown.Item>dark</NavDropdown.Item>
+            <NavDropdown
+              style={{ marginRight: '40px' }}
+              title={
+                theme === 'light' ? (
+                  <div>
+                    <RiPaletteLine style={{ width: '20px', height: '20px' }} /> theme
+                  </div>
+                ) : (
+                  <div>
+                    <RiPaletteLine style={{ width: '20px', height: '20px', color: 'black' }} />{' '}
+                    theme
+                  </div>
+                )
+              }
+              id="navbarScrollingDropdown"
+            >
+              <NavDropdown.Item onClick={() => dispatch(setTheme({ theme: 'light' }))}>
+                <RiPaletteLine style={{ width: '20px', height: '20px' }} /> light
+              </NavDropdown.Item>
+              <NavDropdown.Item onClick={() => dispatch(setTheme({ theme: 'dark' }))}>
+                <RiPaletteFill style={{ width: '20px', height: '20px' }} /> dark
+              </NavDropdown.Item>
             </NavDropdown>
             <FaRegUserCircle
               style={{ position: 'relative', top: '5px', width: '30px', height: '30px' }}
             />
             <NavDropdown title="user" id="navbarScrollingDropdown">
               <NavDropdown.Item>
-                <Link to="/profile">Profile</Link>
+                <Link className="link_router" to="/profile">
+                  Profile
+                </Link>
               </NavDropdown.Item>
 
               <NavDropdown.Item>Log out</NavDropdown.Item>

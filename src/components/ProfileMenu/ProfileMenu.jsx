@@ -11,7 +11,7 @@ const ProfileMenu = () => {
     console.log(menuKey);
   }, [menuKey]);
   return (
-    <div className="nav_profile">
+    <div className="nav_profile" style={{ width: '20%' }}>
       <Nav
         justify
         variant="tabs"

@@ -2,7 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import user from './slices/user/userSlice';
 import auth from './slices/auth/authSlice';
 import filter from './slices/filterSlice/filterSlice';
-import lang from './slices/langSlice/langSlice';
+import header from './slices/headerSlice/headerSlice';
 import profile from './slices/profileSlice/profileSlice';
 
 export const store = configureStore({
@@ -10,7 +10,7 @@ export const store = configureStore({
     user,
     auth,
     filter,
-    lang,
-    profile
+    header,
+    profile,
   },
 });

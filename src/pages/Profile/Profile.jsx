@@ -14,13 +14,16 @@ const Profile = () => {
     !isAuth && navigate('/');
   }, [isAuth, navigate]);
   return (
-    <div className="container">
+    <>
       <Header />
-      <div style={{ display: 'flex' }} className="profile_container">
-        <ProfileMenu />
-        <ProfileInfo />
+
+      <div className="container">
+        <div style={{ display: 'flex' }} className="profile_container">
+          <ProfileMenu />
+          <ProfileInfo />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

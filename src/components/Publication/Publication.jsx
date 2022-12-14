@@ -1,9 +1,9 @@
-import React from 'react'
+import React from 'react';
 
 const Publication = () => {
-  return (
-    <div>Publication</div>
-  )
-}
+  return <div className="container">
+    
+  </div>;
+};
 
-export default Publication
+export default Publication;

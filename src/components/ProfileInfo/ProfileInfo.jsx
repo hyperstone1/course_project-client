@@ -6,7 +6,9 @@ import countryList from 'react-select-country-list';
 import axios from 'axios';
 import { host } from '../../utils/constants';
 import { useSelector } from 'react-redux';
-import { FaSadCry } from 'react-icons';
+import { FaSadCry } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+
 const ProfileInfo = () => {
   const [userInfo, setUserInfo] = useState();
   const [name, setName] = useState();
@@ -100,17 +102,18 @@ const ProfileInfo = () => {
           </div>
         </div>
       )}
-      {menuItem === reviews && (
-        <div className="reviews">
-          <div>You don't have any posts</div>
-          <FaSadCry />
-          <span>click here to create a post</span>
+      {menuItem === 'reviews' && (
+        <div className="reviews no_info">
+          <div style={{ fontSize: '24px' }}>You don't have any posts</div>
+          <FaSadCry style={{ width: '40px', height: '40px' }} />
+
+          <Link to="">click here to create a post</Link>
         </div>
       )}
-      {menuItem === comments && (
-        <div className="comments">
-          <div>You don't have any comments</div>
-          <FaSadCry />
+      {menuItem === 'comments' && (
+        <div className="comments no_info">
+          <div style={{ fontSize: '24px' }}>You don't have any comments</div>
+          <FaSadCry style={{ width: '40px', height: '40px' }}/>
         </div>
       )}
     </>

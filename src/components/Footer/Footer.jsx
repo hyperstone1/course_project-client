@@ -1,10 +1,11 @@
 import React from 'react';
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
+import './index.scss';
 
 const Footer = () => {
   return (
-    <Navbar style={{ marginTop: '50px' }} collapseOnSelect expand="lg" bg="dark" variant="dark">
+    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>
         <Navbar.Brand href="#header">Navbar with text</Navbar.Brand>
         <Navbar.Toggle />

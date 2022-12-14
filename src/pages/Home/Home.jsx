@@ -1,13 +1,19 @@
 import React from 'react';
 import Feed from '../Feed/Feed';
 import Header from '../../components/Header/Header';
-const Home = () => {
+import Footer from '../../components/Footer/Footer';
+import './index.scss';
 
+const Home = () => {
   return (
-    <div className="container">
+    <>
       <Header />
-      <Feed />
-    </div>
+
+      <div className="container">
+        <Feed />
+      </div>
+      <Footer />
+    </>
   );
 };
 
