@@ -20,3 +20,18 @@ export const getMusic = async () => {
   const { data } = await axios.get(`${host}/api/reviews/music`);
   return data;
 };
+
+export const getAllReviews = async () => {
+  const { data } = await axios.get(`${host}/api/reviews/best`);
+  return data;
+};
+
+export const getBestReviews = async () => {
+  const { data } = await axios.get(`${host}/api/reviews/best`);
+  return data;
+};
+
+export const getLatestReviews = async () => {
+  const { data } = await axios.get(`${host}/api/reviews/latest`);
+  return data;
+};
