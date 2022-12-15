@@ -5,6 +5,9 @@ body {
   background-color: #f0f0f0 !important;
 }
 .container {
+  position: relative;
   background-color: #ffffff;
   min-height: 100vh;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  border-radius: 5px;
 }

@@ -37,8 +37,14 @@ const Header = () => {
         <Navbar.Toggle aria-controls="navbarScroll" />
         <Navbar.Collapse id="navbarScroll">
           <Nav className="me-auto my-2 my-lg-0" style={{ maxHeight: '100px' }} navbarScroll>
-            <Nav.Link href="#action1">Home</Nav.Link>
-            <Nav.Link href="#action2">Movies</Nav.Link>
+            <Nav.Link>
+              <Link className='menu-link' to="/">Home</Link>
+            </Nav.Link>
+
+            <Nav.Link>
+              <Link className='menu-link' to="/movies">Movies</Link>
+            </Nav.Link>
+
             <Nav.Link href="#action3">Games</Nav.Link>
             <Nav.Link href="#action4">Books</Nav.Link>
             <Nav.Link href="#action5">Music</Nav.Link>

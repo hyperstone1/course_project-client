@@ -1,0 +1,58 @@
+@keyframes animation_menu {
+  0% {
+    height: 0px;
+  }
+
+  100% {
+    height: 100%;
+  }
+}
+@keyframes animation_menu_closing {
+  0% {
+    height: 100%;
+  }
+
+  100% {
+    height: 0%;
+  }
+}
+
+.movies_menu {
+  position: relative;
+  height: 170px;
+}
+.container_feed_menu {
+  display: none;
+  position: relative;
+  margin: 0 auto;
+  padding: 0px;
+  margin-top: 20px;
+  background-color: #fff;
+  border: 1px solid #e3e3e3;
+  box-shadow: rgb(100 100 111 / 20%) 0px 7px 29px 0px;
+  border-radius: 5px;
+  overflow: hidden;
+  .filter_sort {
+    padding: 20px;
+    .filter {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+    }
+    .sort {
+      position: relative;
+      padding-top: 50px;
+    }
+  }
+}
+.active {
+  display: block;
+  animation: animation_menu 1s;
+  transition: padding 1s animation 1s;
+  overflow: hidden;
+}
+.closing {
+  animation: animation_menu_closing 1s;
+  transition: animation 1s;
+  overflow: hidden;
+}
