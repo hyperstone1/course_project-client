@@ -6,18 +6,22 @@ import Select from 'react-select';
 
 const MoviesMenu = ({ openEqualizer }) => {
   const [open, setOpen] = useState();
-  const ref = useRef(null);
+  const refContainer = useRef(null);
+  const refMenu = useRef(null);
 
   useEffect(() => {
-    const div = ref.current;
+    const container = refContainer.current;
+    const menu = refMenu.current;
     setOpen(openEqualizer);
     if (openEqualizer) {
-      div.classList.add('active');
+      container.classList.add('active');
+      menu.style.display = 'block';
     } else {
-      div.classList.add('closing');
+      container.classList.add('closing');
       setTimeout(() => {
-        div.classList.remove('active');
-        div.classList.remove('closing');
+        menu.style.display = 'none';
+        container.classList.remove('closing');
+        container.classList.remove('active');
       }, 1000);
     }
     console.log(openEqualizer);
@@ -70,19 +74,55 @@ const MoviesMenu = ({ openEqualizer }) => {
         width: '30%',
       };
     },
+    menu: (styles) => {
+      return {
+        ...styles,
+        position: 'absolute',
+        zIndex: '99999999 !important',
+        overflow: 'visible',
+      };
+    },
+    menuList: (styles) => {
+      return {
+        ...styles,
+        display: 'block',
+        zIndex: '999999999 !important',
+      };
+    },
   };
 
   return (
-    <div className="movies_menu">
-      <div ref={ref} className="container_feed_menu">
+    <div ref={refMenu} className="movies_menu">
+      <div ref={refContainer} className="container_menu">
         <div className="filter_sort">
           <div className="filter">
-            <Select styles={customStyles} options={filterGenres} placeholder="Genre" />
-            <Select styles={customStyles} options={filterRating} placeholder="Rating" />
-            <Select styles={customStyles} options={filterDate} placeholder="Date" />
+            <Select
+              menuPortalTarget={document.querySelector('body')}
+              styles={customStyles}
+              options={filterGenres}
+              placeholder="Genre"
+            />
+            <Select
+              menuPortalTarget={document.querySelector('body')}
+              styles={customStyles}
+              options={filterRating}
+              placeholder="Rating"
+            />
+            <Select
+              menuPortalTarget={document.querySelector('body')}
+              styles={customStyles}
+              options={filterDate}
+              placeholder="Date"
+            />
           </div>
-          <div className="sort">
-            <Select styles={customStyles} options={sortBy} placeholder="Sort by ..." />
+          <div className="sort_and_search">
+            <Select
+              menuPortalTarget={document.querySelector('body')}
+              styles={customStyles}
+              options={sortBy}
+              placeholder="Sort by ..."
+            />
+            <button className="search_button">Search</button>
           </div>
         </div>
       </div>

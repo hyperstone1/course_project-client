@@ -3,8 +3,8 @@ import Header from '../../components/Header/Header';
 import MoviesMenu from '../../components/MoviesMenu/MoviesMenu';
 import { RiEqualizerLine } from 'react-icons/ri';
 import { CiSearch } from 'react-icons/ci';
-import Collapse from 'react-bootstrap/Collapse';
-
+import Row from 'react-bootstrap/Row';
+import CardReview from '../../components/CardReview/CardReview';
 import './index.scss';
 
 const Movies = () => {
@@ -15,6 +15,7 @@ const Movies = () => {
   const animationSearch = () => {
     setSearch(!search);
   };
+
   useEffect(() => {
     const input = ref.current;
     if (search) {
@@ -32,21 +33,33 @@ const Movies = () => {
   return (
     <>
       <Header />
-      <div className="container-movies">
-        <div className="container">
+      <div className="container">
+        <div className="container_movies">
           <div className="title">
-            <h4>Movie reviews</h4>{' '}
+            <h4>Movie reviews</h4>
             <div ref={ref} className={'search_input'}>
               <input type="text" placeholder="Search..." />
             </div>
-            <div onClick={animationSearch} className="search">
-              <CiSearch />
-            </div>
-            <div onClick={() => setOpenEqualizer(!openEqualizer)} className="equalizer">
-              <RiEqualizerLine />
+            <div className="options">
+              <button className="create_review">Create review</button>
+
+              <div onClick={animationSearch} className="search">
+                <CiSearch />
+              </div>
+              <div
+                onClick={() => setOpenEqualizer(!openEqualizer)}
+                className={openEqualizer ? 'equalizer shown' : 'equalizer'}
+              >
+                <RiEqualizerLine />
+              </div>
             </div>
           </div>
           <MoviesMenu openEqualizer={openEqualizer} />
+          <Row xs={1} md={2} className="g-4">
+            {Array.from({ length: 4 }).map((_, idx) => (
+              <CardReview idx={idx} />
+            ))}
+          </Row>
         </div>
       </div>
     </>
