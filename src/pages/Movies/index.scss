@@ -46,9 +46,17 @@
       color: rgb(78, 155, 78);
       border: 1px solid rgb(78, 155, 78);
       transition: 0.4s;
+      a {
+        color: rgb(78, 155, 78);
+        text-decoration: none;
+      }
       &:hover {
         background-color: rgb(74, 121, 74);
         color: white;
+        a {
+          color: white;
+          text-decoration: none;
+        }
       }
     }
     .equalizer,

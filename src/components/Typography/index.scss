@@ -1,0 +1,60 @@
+.typography {
+  position: relative;
+  .plus {
+    position: relative;
+    width: 100%;
+    svg {
+      cursor: pointer;
+      transition: all 0.5s;
+    }
+  }
+  .opened {
+    svg {
+      transform: rotate(0.12turn);
+    }
+  }
+  .closed {
+    svg {
+      transform: rotate(0.25turn);
+    }
+  }
+  .toolbox {
+    position: absolute;
+    left: -5px;
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    background: rgb(232 234 235);
+    box-shadow: 0 5px 20px #0000001a;
+    border: none;
+    border-radius: 8px;
+    transition: opacity 0.1s ease;
+    // overflow-x: hidden;
+    // overflow-y: auto;
+    z-index: 111;
+    li {
+      position: relative;
+      padding: 5px 15px;
+      width: 100%;
+      display: flex;
+      flex-shrink: 0;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 8px;
+      color: rgb(116 124 129);
+
+      cursor: pointer;
+      svg {
+        position: relative;
+        top: 0.5px;
+        width: 20px;
+        height: 20px;
+      }
+      &:hover {
+        color: black;
+        cursor: pointer;
+      }
+    }
+  }
+}

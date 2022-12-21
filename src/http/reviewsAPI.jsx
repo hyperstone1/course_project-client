@@ -35,3 +35,8 @@ export const getLatestReviews = async () => {
   const { data } = await axios.get(`${host}/api/reviews/latest`);
   return data;
 };
+
+export const getAllTags = async () => {
+  const { data } = await axios.get(`${host}/api/reviews/tags`);
+  return data;
+};

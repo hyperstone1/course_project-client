@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setLogin } from './store/slices/auth/authSlice';
 import Profile from './pages/Profile/Profile';
 import Movies from './pages/Movies/Movies';
+import AddReview from './pages/AddReview/AddReview';
 
 function App() {
   const isLogin = useSelector((state) => state.auth.isLogin);
@@ -26,6 +27,7 @@ function App() {
     <div className="App">
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/movies/add" element={<AddReview />} />
         <Route path="/movies" element={<Movies />} />
         <Route path="/register" element={<Registration />} />
         <Route path="/login" element={<Login />} />

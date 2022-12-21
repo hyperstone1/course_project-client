@@ -5,6 +5,7 @@ import { RiEqualizerLine } from 'react-icons/ri';
 import { CiSearch } from 'react-icons/ci';
 import Row from 'react-bootstrap/Row';
 import CardReview from '../../components/CardReview/CardReview';
+import { Link } from 'react-router-dom';
 import './index.scss';
 
 const Movies = () => {
@@ -41,7 +42,9 @@ const Movies = () => {
               <input type="text" placeholder="Search..." />
             </div>
             <div className="options">
-              <button className="create_review">Create review</button>
+              <button className="create_review">
+                <Link to="/movies/add"> Create review</Link>
+              </button>
 
               <div onClick={animationSearch} className="search">
                 <CiSearch />
