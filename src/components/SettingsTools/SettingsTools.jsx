@@ -1,41 +1,43 @@
 import React, { useState } from 'react';
-import { BsPlusLg } from 'react-icons/bs';
-import './index.scss';
 import { RxText } from 'react-icons/rx';
 import { BiHeading } from 'react-icons/bi';
+import { IoMdSettings } from 'react-icons/io';
 import { BsImage } from 'react-icons/bs';
-import {
-  setToolType,
-  setMenuVisibillity,
-  setTools,
-} from '../../store/slices/addReviewSlice/addReview';
-import { useDispatch, useSelector } from 'react-redux';
+import { MdDeleteForever } from 'react-icons/md';
+import { setToolType, changeTool, deleteTool } from '../../store/slices/addReviewSlice/addReview';
 
-const Typography = () => {
+import { useDispatch, useSelector } from 'react-redux';
+import './index.scss';
+
+const SettingsTools = ({ id }) => {
   // const [selectedValue, setSelectedValue] = useState('text');
-  const [plus, setPlus] = useState(false);
+  const [settings, setSettings] = useState(false);
   const dispatch = useDispatch();
   const { toolType, menuVisibillity, tools } = useSelector((state) => state.addReview);
 
-  const handleClickPlus = () => {
-    setPlus(!plus);
+  const handleClickSettings = () => {
+    setSettings(!settings);
   };
 
   const handleSelectTool = (tool) => {
     console.log(toolType);
-    dispatch(setTools(tool));
-    setPlus(false);
+    dispatch(changeTool({ tool, id }));
+    setSettings(false);
+  };
+  const handleDeleteTool = () => {
+    dispatch(deleteTool({ id }));
+    setSettings(false);
   };
 
   return (
-    <div className="typography">
+    <div className="settings">
       {menuVisibillity && (
-        <div className={plus ? 'plus opened' : 'plus closed'}>
-          <BsPlusLg style={{ width: '16px', height: '16px' }} onClick={handleClickPlus} />
+        <div className={settings ? 'plus opened' : 'plus closed'}>
+          <IoMdSettings style={{ width: '16px', height: '16px' }} onClick={handleClickSettings} />
         </div>
       )}
 
-      {plus && (
+      {settings && (
         <div className="toolbox">
           <li onClick={() => handleSelectTool('text')}>
             <RxText />
@@ -49,10 +51,14 @@ const Typography = () => {
             <BsImage />
             <span>Изображение</span>
           </li>
+          <li onClick={() => handleDeleteTool()}>
+            <MdDeleteForever />
+            <span>Удалить</span>
+          </li>
         </div>
       )}
     </div>
   );
 };
 
-export default Typography;
+export default SettingsTools;

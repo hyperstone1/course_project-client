@@ -1,7 +1,10 @@
-.typography {
-  position: relative;
+.settings {
+  position: absolute;
+  top: 0;
+  right: 0;
   .plus {
     position: relative;
+    padding: 0 !important;
     svg {
       cursor: pointer;
       transition: all 0.5s;
@@ -20,6 +23,7 @@
   .toolbox {
     position: absolute;
     left: -5px;
+    height: auto !important;
     width: 200px;
     display: flex;
     flex-direction: column;
@@ -29,8 +33,7 @@
     border: none;
     border-radius: 8px;
     transition: opacity 0.1s ease;
-    // overflow-x: hidden;
-    // overflow-y: auto;
+
     z-index: 111;
     li {
       position: relative;
@@ -56,4 +59,3 @@
     }
   }
 }
-

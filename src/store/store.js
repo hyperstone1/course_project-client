@@ -4,6 +4,7 @@ import auth from './slices/auth/authSlice';
 import filter from './slices/filterSlice/filterSlice';
 import header from './slices/headerSlice/headerSlice';
 import profile from './slices/profileSlice/profileSlice';
+import addReview from './slices/addReviewSlice/addReview';
 
 export const store = configureStore({
   reducer: {
@@ -12,5 +13,6 @@ export const store = configureStore({
     filter,
     header,
     profile,
+    addReview,
   },
 });

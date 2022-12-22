@@ -8,6 +8,9 @@ import { RxCrossCircled } from 'react-icons/rx';
 import debounce from 'lodash/debounce';
 import { getAllTags } from '../../http/reviewsAPI';
 import Typography from '../../components/Typography/Typography';
+import { useSelector, useDispatch } from 'react-redux';
+import { setMenuVisibillity } from '../../store/slices/addReviewSlice/addReview';
+import SettingsTools from '../../components/SettingsTools/SettingsTools';
 
 const AddReview = () => {
   const [drag, setDrag] = useState(false);
@@ -17,9 +20,10 @@ const AddReview = () => {
   const [results, setResults] = useState([]);
   const inputEl = useRef(null);
   const inputTagRef = useRef(null);
-  const [width, setWidth] = useState(8);
   const [tags, setTags] = useState([]);
   const [tag, setTag] = useState('');
+  const dispatch = useDispatch();
+  const { toolType, menuVisibillity, tools } = useSelector((state) => state.addReview);
 
   useEffect(() => {
     if (coverImage) {
@@ -36,14 +40,6 @@ const AddReview = () => {
     }
   }, [coverImage]);
 
-  const keyDownTag = (e) => {
-    if (inputTagRef) {
-      const input = inputTagRef.current;
-      console.log(e.target.offsetWidth);
-      // input.style.width = (e.target.offsetWidth + 1) * 8 + 'px';
-    }
-  };
-
   function dragStartHandler(e) {
     e.preventDefault();
     setDrag(true);
@@ -57,10 +53,7 @@ const AddReview = () => {
   function onDropHandler(e) {
     e.preventDefault();
     let files = [...e.dataTransfer.files];
-    console.log(e.dataTransfer.getData('url'));
-    // const formData = new FormData();
     const img = [...reviewImages];
-    console.log(e.target.className);
     if (e.target.closest('.images-review')) {
       files.map((file) => img.push(file));
       setReviewImages(img);
@@ -71,7 +64,6 @@ const AddReview = () => {
       console.log(file[0]);
       setCoverImage(file[0]);
     }
-
     setDrag(false);
   }
 
@@ -98,17 +90,11 @@ const AddReview = () => {
   const handleOnChange = (e) => {
     const { value } = e.target;
     setTag(value);
-    // if (value.length > 8) {
-    //   setWidth((value.length + 1) * 8 + 'px');
-    // } else {
-    //   setWidth(8);
-    // }
     if (value.includes(',')) {
       const separator = value.indexOf(',');
       const newTag = value.substring(0, separator);
       if (separator != value.length) {
         const remainder = value.substring(separator + 1, value.length);
-        console.log(remainder);
         setTag(remainder);
       } else {
         setTag('');
@@ -120,6 +106,13 @@ const AddReview = () => {
 
   const handleDelTag = (tag) => {
     setTags(tags.filter((item) => item != tag));
+  };
+
+  const handleClickEditArea = () => {
+    dispatch(setMenuVisibillity({ menuVisibillity: true }));
+  };
+  const handleMouseDownEditArea = () => {
+    dispatch(setMenuVisibillity({ menuVisibillity: false }));
   };
 
   return (
@@ -139,44 +132,56 @@ const AddReview = () => {
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <Form.Control type="text" placeholder="Заголовок" />
             </Form.Group>
-
-            <Typography />
+            <div className="editor">
+              {tools.map((tool, id) => (
+                <div className="selected_tool" tabIndex={0}>
+                  {tool === 'text' && <div contentEditable={true} className="text"></div>}
+                  {tool === 'header' && <h3 contentEditable={true} className="text"></h3>}
+                  {tool === 'image' && (
+                    <div className="image-tool">
+                      {drag ? (
+                        <div
+                          onDrop={(e) => onDropHandler(e)}
+                          onDragStart={(e) => dragStartHandler(e)}
+                          onDragLeave={(e) => dragLeaveHandler(e)}
+                          onDragOver={(e) => dragStartHandler(e)}
+                          className="images-review drop-area"
+                        >
+                          Отпустите файлы, чтобы загрузить их
+                        </div>
+                      ) : (
+                        <div
+                          className="images-review download-area"
+                          onDragStart={(e) => dragStartHandler(e)}
+                          onDragLeave={(e) => dragLeaveHandler(e)}
+                          onDragOver={(e) => dragStartHandler(e)}
+                        >
+                          <FiDownload />
+                          Перетащите файлы, чтобы загрузить их
+                        </div>
+                      )}
+                      {reviewImages && (
+                        <div className="images">
+                          {reviewImages.map((image) => (
+                            <div className="image">
+                              <div>{image.name}</div>
+                              <RxCrossCircled />
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  <SettingsTools id={id}/>
+                </div>
+              ))}
+              <Typography />
+            </div>
 
             {/* <Form.Group controlId="formFile" className="mb-3">
               <Form.Label>Загрузите изображение</Form.Label>
               <Form.Control type="file" />
             </Form.Group> */}
-            {drag ? (
-              <div
-                onDrop={(e) => onDropHandler(e)}
-                onDragStart={(e) => dragStartHandler(e)}
-                onDragLeave={(e) => dragLeaveHandler(e)}
-                onDragOver={(e) => dragStartHandler(e)}
-                className="images-review drop-area"
-              >
-                Отпустите файлы, чтобы загрузить их
-              </div>
-            ) : (
-              <div
-                className="images-review download-area"
-                onDragStart={(e) => dragStartHandler(e)}
-                onDragLeave={(e) => dragLeaveHandler(e)}
-                onDragOver={(e) => dragStartHandler(e)}
-              >
-                <FiDownload />
-                Перетащите файлы, чтобы загрузить их
-              </div>
-            )}
-            {reviewImages && (
-              <div className="images">
-                {reviewImages.map((image) => (
-                  <div className="image">
-                    <div>{image.name}</div>
-                    <RxCrossCircled />
-                  </div>
-                ))}
-              </div>
-            )}
 
             <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
               <Form.Label>Напишите текст вашей рецензии</Form.Label>
