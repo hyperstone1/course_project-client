@@ -2,27 +2,7 @@
   width: 60%;
   margin: 0 auto;
 }
-.drop-area {
-  width: 100%;
-  height: 300px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 5px dashed #ffffff;
-}
-.download-area {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 300px;
-  svg {
-    width: 70px;
-    height: 70px;
-  }
-}
+
 .images {
   display: flex;
   flex-direction: column;
@@ -50,21 +30,7 @@
 h5 {
   text-align: center;
 }
-.cover {
-  margin-bottom: 15px;
-  .preview-cover {
-    position: relative;
-    display: flex;
 
-    width: 100%;
-    height: 100%;
-    margin-bottom: 15px;
-    img {
-      max-width: 100%;
-      max-height: 100%;
-    }
-  }
-}
 .tagger-container {
   display: flex;
   flex-wrap: wrap;
@@ -123,7 +89,7 @@ h5 {
       font-size: 16px;
       outline: 0;
       padding: 0;
-      top: 4px;
+      top: 2px;
       width: 100%;
       position: absolute;
       &:focus {
@@ -132,13 +98,16 @@ h5 {
     }
   }
 }
+.tags {
+  margin-top: 5%;
+}
 
 .editor {
   .selected_tool {
     position: relative;
     width: 100%;
     height: 100%;
-    background-color: #e3e3e3;
+    background-color: rgb(232, 234, 235);
     border-radius: 8px;
     margin-bottom: 10px;
     div {
@@ -156,10 +125,68 @@ h5 {
       }
     }
     .image-tool {
-      height: 300px;
+      height: 100%;
+      padding: 0;
       .images-review {
-        height: 100%;
+        height: 370px;
+        padding: 0;
+        svg {
+          height: 70px;
+        }
+        .preview-images {
+          position: relative;
+          display: flex;
+          width: 100%;
+          height: 100%;
+          padding: 0;
+          img {
+            max-width: 100%;
+            height: fit-content;
+            border-radius: 10px;
+          }
+        }
       }
     }
+  }
+}
+.cover {
+  position: relative;
+  width: 100%;
+}
+
+.cover_image {
+  margin-bottom: 15px;
+  .preview-cover {
+    position: relative;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    img {
+      max-width: 100%;
+      height: fit-content;
+    }
+  }
+}
+.drop-area {
+  width: 100%;
+  height: 370px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 5px dashed #000000;
+}
+.download-area {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 370px;
+  background: rgb(232, 234, 235);
+  svg {
+    width: 70px;
+    height: 70px;
   }
 }

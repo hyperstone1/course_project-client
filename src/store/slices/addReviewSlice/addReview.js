@@ -20,14 +20,27 @@ const addReviewSlice = createSlice({
       state.tools.push(action.payload);
     },
     changeTool: (state, action) => {
-      state.tools[action.payload.id] = action.payload.tool;
+      state.tools = state.tools.map((item, id) =>
+        id === action.payload.id ? { ...item, type: action.payload.tool } : item,
+      );
+    },
+    changeImageTool: (state, action) => {
+      state.tools = state.tools.map((item, id) =>
+        id === action.payload.id ? { ...item, url: action.payload.url } : item,
+      );
     },
     deleteTool: (state, action) => {
-      state.tools = state.tools.filter((_, id) => id !== action.payload.id);
+      state.tools = state.tools.filter((item) => item.id !== action.payload.id);
     },
   },
 });
 
-export const { setToolType, setMenuVisibillity, setTools, changeTool, deleteTool } =
-  addReviewSlice.actions;
+export const {
+  setToolType,
+  setMenuVisibillity,
+  setTools,
+  changeTool,
+  changeImageTool,
+  deleteTool,
+} = addReviewSlice.actions;
 export default addReviewSlice.reducer;

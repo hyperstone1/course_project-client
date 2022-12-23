@@ -1,39 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { BsPlusLg } from 'react-icons/bs';
 import './index.scss';
 import { RxText } from 'react-icons/rx';
 import { BiHeading } from 'react-icons/bi';
 import { BsImage } from 'react-icons/bs';
-import {
-  setToolType,
-  setMenuVisibillity,
-  setTools,
-} from '../../store/slices/addReviewSlice/addReview';
+import { setTools } from '../../store/slices/addReviewSlice/addReview';
 import { useDispatch, useSelector } from 'react-redux';
 
 const Typography = () => {
-  // const [selectedValue, setSelectedValue] = useState('text');
   const [plus, setPlus] = useState(false);
   const dispatch = useDispatch();
-  const { toolType, menuVisibillity, tools } = useSelector((state) => state.addReview);
+  const { toolType } = useSelector((state) => state.addReview);
+  const [idCounter, setIdCounter] = useState(0);
+  const rootEl = useRef(null);
 
   const handleClickPlus = () => {
     setPlus(!plus);
   };
 
+  useEffect(() => {
+    const onClick = (e) => rootEl.current.contains(e.target) || setPlus(false);
+    document.addEventListener('click', onClick);
+    return () => document.removeEventListener('click', onClick);
+  }, []);
+
   const handleSelectTool = (tool) => {
     console.log(toolType);
-    dispatch(setTools(tool));
+    if (tool === 'image') {
+      dispatch(setTools({ id: idCounter, type: tool, url: null }));
+    } else {
+      dispatch(setTools({ id: idCounter, type: tool }));
+    }
+    setIdCounter(idCounter + 1);
     setPlus(false);
   };
 
   return (
-    <div className="typography">
-      {menuVisibillity && (
+    <div ref={rootEl} className="typography">
+      <div onClick={handleClickPlus} className="add_tool">
         <div className={plus ? 'plus opened' : 'plus closed'}>
-          <BsPlusLg style={{ width: '16px', height: '16px' }} onClick={handleClickPlus} />
+          <BsPlusLg style={{ width: '16px', height: '16px' }} />
         </div>
-      )}
+        <span style={{ marginLeft: '5px' }}>Add tool</span>
+      </div>
 
       {plus && (
         <div className="toolbox">

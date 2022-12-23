@@ -1,19 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { RxText } from 'react-icons/rx';
 import { BiHeading } from 'react-icons/bi';
 import { IoMdSettings } from 'react-icons/io';
 import { BsImage } from 'react-icons/bs';
 import { MdDeleteForever } from 'react-icons/md';
-import { setToolType, changeTool, deleteTool } from '../../store/slices/addReviewSlice/addReview';
+import { changeTool, deleteTool } from '../../store/slices/addReviewSlice/addReview';
 
 import { useDispatch, useSelector } from 'react-redux';
 import './index.scss';
 
 const SettingsTools = ({ id }) => {
-  // const [selectedValue, setSelectedValue] = useState('text');
   const [settings, setSettings] = useState(false);
   const dispatch = useDispatch();
-  const { toolType, menuVisibillity, tools } = useSelector((state) => state.addReview);
+  const { toolType } = useSelector((state) => state.addReview);
+  const rootEl = useRef(null);
+
+  useEffect(() => {
+    const onClick = (e) => rootEl.current.contains(e.target) || setSettings(false);
+    document.addEventListener('click', onClick);
+    return () => document.removeEventListener('click', onClick);
+  }, []);
 
   const handleClickSettings = () => {
     setSettings(!settings);
@@ -21,21 +27,20 @@ const SettingsTools = ({ id }) => {
 
   const handleSelectTool = (tool) => {
     console.log(toolType);
-    dispatch(changeTool({ tool, id }));
+    dispatch(changeTool({ id, tool }));
     setSettings(false);
   };
   const handleDeleteTool = () => {
+    console.log(id);
     dispatch(deleteTool({ id }));
     setSettings(false);
   };
 
   return (
-    <div className="settings">
-      {menuVisibillity && (
-        <div className={settings ? 'plus opened' : 'plus closed'}>
-          <IoMdSettings style={{ width: '16px', height: '16px' }} onClick={handleClickSettings} />
-        </div>
-      )}
+    <div ref={rootEl} className="settings">
+      <div className={settings ? 'plus opened' : 'plus closed'}>
+        <IoMdSettings style={{ width: '16px', height: '16px' }} onClick={handleClickSettings} />
+      </div>
 
       {settings && (
         <div className="toolbox">

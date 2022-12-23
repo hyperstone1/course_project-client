@@ -9,14 +9,15 @@ import debounce from 'lodash/debounce';
 import { getAllTags } from '../../http/reviewsAPI';
 import Typography from '../../components/Typography/Typography';
 import { useSelector, useDispatch } from 'react-redux';
-import { setMenuVisibillity } from '../../store/slices/addReviewSlice/addReview';
+import { changeImageTool } from '../../store/slices/addReviewSlice/addReview';
 import SettingsTools from '../../components/SettingsTools/SettingsTools';
 
 const AddReview = () => {
   const [drag, setDrag] = useState(false);
   const [reviewImages, setReviewImages] = useState([]);
   const [coverImage, setCoverImage] = useState();
-  const [preview, setPreview] = useState('');
+  const [previewCover, setPreviewCover] = useState('');
+  const [previewReview, setPreviewReview] = useState([]);
   const [results, setResults] = useState([]);
   const inputEl = useRef(null);
   const inputTagRef = useRef(null);
@@ -24,6 +25,16 @@ const AddReview = () => {
   const [tag, setTag] = useState('');
   const dispatch = useDispatch();
   const { toolType, menuVisibillity, tools } = useSelector((state) => state.addReview);
+  const [imagesTool, setImagesTool] = useState([]);
+
+  useEffect(() => {
+    setImagesTool(tools.filter((tool) => tool.type === 'image'));
+    console.log(imagesTool);
+  }, [tools]);
+
+  useEffect(() => {
+    console.log(imagesTool);
+  }, [imagesTool]);
 
   useEffect(() => {
     if (coverImage) {
@@ -31,12 +42,12 @@ const AddReview = () => {
       if (coverImage && coverImage.type.substr(0, 5) === 'image') {
         const reader = new FileReader();
         reader.onloadend = () => {
-          setPreview(reader.result);
+          setPreviewCover(reader.result);
         };
         reader.readAsDataURL(coverImage);
       }
     } else {
-      setPreview(null);
+      setPreviewCover(null);
     }
   }, [coverImage]);
 
@@ -50,14 +61,21 @@ const AddReview = () => {
     setDrag(false);
   }
 
-  function onDropHandler(e) {
+  function onDropHandler(e, id) {
     e.preventDefault();
-    let files = [...e.dataTransfer.files];
     const img = [...reviewImages];
     if (e.target.closest('.images-review')) {
-      files.map((file) => img.push(file));
-      setReviewImages(img);
-      console.log('if');
+      let file = e.dataTransfer.files;
+      console.log(file);
+      if (file[0].type.substr(0, 5) === 'image') {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setReviewImages([...reviewImages, { url: reader.result }]);
+          dispatch(changeImageTool({ id, url: reader.result }));
+        };
+        reader.readAsDataURL(file[0]);
+      }
+      console.log(reviewImages);
     } else {
       let file = e.dataTransfer.files;
       console.log('else');
@@ -108,13 +126,6 @@ const AddReview = () => {
     setTags(tags.filter((item) => item != tag));
   };
 
-  const handleClickEditArea = () => {
-    dispatch(setMenuVisibillity({ menuVisibillity: true }));
-  };
-  const handleMouseDownEditArea = () => {
-    dispatch(setMenuVisibillity({ menuVisibillity: false }));
-  };
-
   return (
     <>
       <Header />
@@ -135,13 +146,13 @@ const AddReview = () => {
             <div className="editor">
               {tools.map((tool, id) => (
                 <div className="selected_tool" tabIndex={0}>
-                  {tool === 'text' && <div contentEditable={true} className="text"></div>}
-                  {tool === 'header' && <h3 contentEditable={true} className="text"></h3>}
-                  {tool === 'image' && (
+                  {tool.type === 'text' && <div contentEditable={true} className="text"></div>}
+                  {tool.type === 'header' && <h3 contentEditable={true} className="text"></h3>}
+                  {tool.type === 'image' && (
                     <div className="image-tool">
                       {drag ? (
                         <div
-                          onDrop={(e) => onDropHandler(e)}
+                          onDrop={(e) => onDropHandler(e, id)}
                           onDragStart={(e) => dragStartHandler(e)}
                           onDragLeave={(e) => dragLeaveHandler(e)}
                           onDragOver={(e) => dragStartHandler(e)}
@@ -156,39 +167,37 @@ const AddReview = () => {
                           onDragLeave={(e) => dragLeaveHandler(e)}
                           onDragOver={(e) => dragStartHandler(e)}
                         >
-                          <FiDownload />
-                          Перетащите файлы, чтобы загрузить их
-                        </div>
-                      )}
-                      {reviewImages && (
-                        <div className="images">
-                          {reviewImages.map((image) => (
-                            <div className="image">
-                              <div>{image.name}</div>
-                              <RxCrossCircled />
-                            </div>
-                          ))}
+                          {imagesTool.map((item, i) =>
+                            item.url ? (
+                              <div className="preview-images">
+                                {item.id === tool.id ? <img src={item.url} /> : null}
+                              </div>
+                            ) : (
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                  flexDirection: 'column',
+                                  height: '100%',
+                                }}
+                              >
+                                <FiDownload />
+                                <p>Перетащите сюда изображение</p>
+                              </div>
+                            ),
+                          )}
                         </div>
                       )}
                     </div>
                   )}
-                  <SettingsTools id={id}/>
+                  <SettingsTools id={tool.id} />
                 </div>
               ))}
               <Typography />
             </div>
 
-            {/* <Form.Group controlId="formFile" className="mb-3">
-              <Form.Label>Загрузите изображение</Form.Label>
-              <Form.Control type="file" />
-            </Form.Group> */}
-
-            <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-              <Form.Label>Напишите текст вашей рецензии</Form.Label>
-              <Form.Control as="textarea" rows={3} />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formBasicEmail">
+            <Form.Group className="mb-3 tags" controlId="formBasicEmail">
               <Form.Label>Теги</Form.Label>
               <div className="tagger-container">
                 {tags.map((tag) => (
@@ -216,7 +225,7 @@ const AddReview = () => {
                   />
                 </div>
               </div>
-              <Form.Label>Введите теги используя запятую.</Form.Label>
+              <Form.Text>Введите теги используя запятую.</Form.Text>
             </Form.Group>
 
             {results.length > 0 && (
@@ -243,14 +252,14 @@ const AddReview = () => {
               </div>
             ) : (
               <div
-                className="cover download-area"
+                className={coverImage ? 'cover_image' : 'cover download-area'}
                 onDragStart={(e) => dragStartHandler(e)}
                 onDragLeave={(e) => dragLeaveHandler(e)}
                 onDragOver={(e) => dragStartHandler(e)}
               >
                 {coverImage ? (
                   <div className="preview-cover">
-                    <img src={preview} />
+                    <img src={previewCover} />
                   </div>
                 ) : (
                   <div

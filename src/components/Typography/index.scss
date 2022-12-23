@@ -1,24 +1,36 @@
 .typography {
   position: relative;
-  .plus {
-    position: relative;
-    svg {
-      cursor: pointer;
-      transition: all 0.5s;
+  display: flex;
+  .add_tool {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    &:hover {
+      opacity: 0.7;
     }
-  }
-  .opened {
-    svg {
-      transform: rotate(0.12turn);
+    .plus {
+      position: relative;
+      display: flex;
+      align-items: center;
+      svg {
+        transition: all 0.5s;
+      }
     }
-  }
-  .closed {
-    svg {
-      transform: rotate(0.25turn);
+    .opened {
+      svg {
+        transform: rotate(0.12turn);
+      }
+    }
+    .closed {
+      svg {
+        transform: rotate(0.25turn);
+      }
     }
   }
   .toolbox {
     position: absolute;
+    top: 30px;
     left: -5px;
     width: 200px;
     display: flex;
@@ -56,4 +68,3 @@
     }
   }
 }
-
