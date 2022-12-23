@@ -17,24 +17,25 @@ const AddReview = () => {
   const [reviewImages, setReviewImages] = useState([]);
   const [coverImage, setCoverImage] = useState();
   const [previewCover, setPreviewCover] = useState('');
-  const [previewReview, setPreviewReview] = useState([]);
   const [results, setResults] = useState([]);
-  const inputEl = useRef(null);
-  const inputTagRef = useRef(null);
   const [tags, setTags] = useState([]);
   const [tag, setTag] = useState('');
-  const dispatch = useDispatch();
-  const { toolType, menuVisibillity, tools } = useSelector((state) => state.addReview);
+  const [header, setHeader] = useState('');
+  const [text, setText] = useState('');
   const [imagesTool, setImagesTool] = useState([]);
+  const inputEl = useRef(null);
+  const inputTagRef = useRef(null);
+  const headerRef = useRef(null);
+  const dispatch = useDispatch();
+  const { tools } = useSelector((state) => state.addReview);
 
   useEffect(() => {
     setImagesTool(tools.filter((tool) => tool.type === 'image'));
-    console.log(imagesTool);
   }, [tools]);
 
   useEffect(() => {
-    console.log(imagesTool);
-  }, [imagesTool]);
+    console.log(header);
+  }, [header]);
 
   useEffect(() => {
     if (coverImage) {
@@ -61,12 +62,18 @@ const AddReview = () => {
     setDrag(false);
   }
 
+  const handleHeaderChange = (e) => {
+    if (headerRef) {
+      const title = headerRef.current;
+      title.classList.remove('.data-placeholder');
+      setHeader(e.currentTarget.textContent);
+    }
+  };
+
   function onDropHandler(e, id) {
     e.preventDefault();
-    const img = [...reviewImages];
     if (e.target.closest('.images-review')) {
       let file = e.dataTransfer.files;
-      console.log(file);
       if (file[0].type.substr(0, 5) === 'image') {
         const reader = new FileReader();
         reader.onloadend = () => {
@@ -75,11 +82,8 @@ const AddReview = () => {
         };
         reader.readAsDataURL(file[0]);
       }
-      console.log(reviewImages);
     } else {
       let file = e.dataTransfer.files;
-      console.log('else');
-      console.log(file[0]);
       setCoverImage(file[0]);
     }
     setDrag(false);
@@ -111,7 +115,7 @@ const AddReview = () => {
     if (value.includes(',')) {
       const separator = value.indexOf(',');
       const newTag = value.substring(0, separator);
-      if (separator != value.length) {
+      if (separator !== value.length) {
         const remainder = value.substring(separator + 1, value.length);
         setTag(remainder);
       } else {
@@ -123,7 +127,7 @@ const AddReview = () => {
   };
 
   const handleDelTag = (tag) => {
-    setTags(tags.filter((item) => item != tag));
+    setTags(tags.filter((item) => item !== tag));
   };
 
   return (
@@ -146,8 +150,25 @@ const AddReview = () => {
             <div className="editor">
               {tools.map((tool, id) => (
                 <div className="selected_tool" tabIndex={0}>
-                  {tool.type === 'text' && <div contentEditable={true} className="text"></div>}
-                  {tool.type === 'header' && <h3 contentEditable={true} className="text"></h3>}
+                  {tool.type === 'text' && (
+                    <div
+                      contentEditable={true}
+                      className="text"
+                      value={text}
+                      onInput={(e) => setText(e.currentTarget.textContent)}
+                    />
+                  )}
+                  {tool.type === 'header' && (
+                    // eslint-disable-next-line
+                    <h3
+                      ref={headerRef}
+                      contentEditable={true}
+                      className={header ? 'text' : 'text data-placeholder'}
+                      value={header}
+                      data-placeholder="Заголовок"
+                      onInput={(e) => handleHeaderChange(e)}
+                    />
+                  )}
                   {tool.type === 'image' && (
                     <div className="image-tool">
                       {drag ? (
@@ -170,7 +191,9 @@ const AddReview = () => {
                           {imagesTool.map((item, i) =>
                             item.url ? (
                               <div className="preview-images">
-                                {item.id === tool.id ? <img src={item.url} /> : null}
+                                {item.id === tool.id ? (
+                                  <img src={item.url} alt="img review" />
+                                ) : null}
                               </div>
                             ) : (
                               <div
@@ -259,7 +282,7 @@ const AddReview = () => {
               >
                 {coverImage ? (
                   <div className="preview-cover">
-                    <img src={previewCover} />
+                    <img src={previewCover} alt="cover" />
                   </div>
                 ) : (
                   <div

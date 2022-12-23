@@ -110,6 +110,16 @@ h5 {
     background-color: rgb(232, 234, 235);
     border-radius: 8px;
     margin-bottom: 10px;
+    .data-placeholder {
+      cursor: text;
+      &:before {
+        display: block;
+        content: attr(data-placeholder);
+        position: absolute;
+        color: rgb(116 124 129);
+        font-weight: 400;
+      }
+    }
     div {
       height: 36px;
     }
