@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
 import book from '../../images/book.jpg';
@@ -10,13 +10,22 @@ import { CgNotes } from 'react-icons/cg';
 import { FaRegComment } from 'react-icons/fa';
 import { AiOutlineLike, AiFillLike } from 'react-icons/ai';
 import { BsBookmark, BsFillBookmarkFill, BsChatFill } from 'react-icons/bs';
-import comments from '../../images/comments.svg';
+import Loader from './Loader';
+import moment from 'moment';
+import axios from 'axios';
 
-const CardReview = ({ idx }) => {
+const CardReview = ({ id, title, text, coverURL, createdAt }) => {
   const reviews = [book, movie, game, music];
   const [like, setLike] = useState(false);
   const [openComments, setOpenComments] = useState(false);
   const [save, setSave] = useState(false);
+  const [textReview, setTextReview] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  const img = useRef(null);
+
+  const [coverImg, setCoverImg] = useState('');
+  const [url, setUrl] = useState();
 
   const handleClickIcons = (e) => {
     const saveSVG = e.target.closest('.save');
@@ -28,11 +37,35 @@ const CardReview = ({ idx }) => {
     }
   };
 
+  const handleClickLike = () => {
+    
+  }
+
+  useEffect(() => {
+    if (text) {
+      const textJson = JSON.parse(text[0]);
+      textJson.text.length > 255
+        ? setTextReview(`${textJson.text.slice(0, 255)} ...`)
+        : setTextReview(textJson.text);
+      console.log(coverURL);
+    }
+  }, []);
+
+  // useEffect(() => {
+  //   const url = URL.createObjectURL(coverURL);
+  //   console.log(url);
+  // }, []);
+
+  const handleLoaded = () => {
+    setLoading(false);
+  };
+
   return (
-    <Col>
+    <Col key={id}>
       <Card>
         <div className="card_img">
-          <Card.Img variant="top" src={reviews[idx]} />
+          <Card.Img ref={img} variant="top" src={coverURL} onLoad={() => handleLoaded()} />
+          {loading && <Loader />}
         </div>
         <Card.Body>
           <Card.Subtitle className="mb-2 text-muted">
@@ -41,13 +74,10 @@ const CardReview = ({ idx }) => {
             </div>
             <span>Reviewer</span>
           </Card.Subtitle>
-          <Card.Title>Card Title</Card.Title>
-          <Card.Text>
-            Some quick example text to build on the card title and make up the bulk of the card's
-            content.
-          </Card.Text>
+          <Card.Title>{title}</Card.Title>
+          <Card.Text>{textReview}</Card.Text>
           <Card.Text className="footer_card">
-            <span>Date</span>
+            <span>{moment().format('DD MMM YYYY', createdAt)}</span>
             <div className="icons" onClick={(e) => handleClickIcons(e)}>
               <div className="save">
                 {save ? <BsFillBookmarkFill className="save" /> : <BsBookmark className="save" />}

@@ -6,12 +6,13 @@ import { BiHeading } from 'react-icons/bi';
 import { BsImage } from 'react-icons/bs';
 import { setTools } from '../../store/slices/addReviewSlice/addReview';
 import { useDispatch, useSelector } from 'react-redux';
+import { setCounterId } from '../../store/slices/addReviewSlice/addReview';
 
-const Typography = () => {
+const Typography = ({ setHeader, setText }) => {
   const [plus, setPlus] = useState(false);
   const dispatch = useDispatch();
-  const { toolType } = useSelector((state) => state.addReview);
-  const [idCounter, setIdCounter] = useState(0);
+  const { toolType, tools, counterId } = useSelector((state) => state.addReview);
+  const [idCounter, setIdCounter] = useState(tools.length);
   const rootEl = useRef(null);
 
   const handleClickPlus = () => {
@@ -27,11 +28,13 @@ const Typography = () => {
   const handleSelectTool = (tool) => {
     console.log(toolType);
     if (tool === 'image') {
-      dispatch(setTools({ id: idCounter, type: tool, url: null }));
+      dispatch(setTools({ id: counterId, type: tool, url: null }));
     } else {
-      dispatch(setTools({ id: idCounter, type: tool }));
+      dispatch(setTools({ id: counterId, type: tool }));
+      setHeader('');
+      setText('');
     }
-    setIdCounter(idCounter + 1);
+    dispatch(setCounterId());
     setPlus(false);
   };
 

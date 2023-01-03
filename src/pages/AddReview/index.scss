@@ -110,7 +110,24 @@ h5 {
     background-color: rgb(232, 234, 235);
     border-radius: 8px;
     margin-bottom: 10px;
+    .text {
+      height: 100%;
+      overflow-wrap: break-word;
+    }
+
+    .edit {
+      position: absolute;
+      top: 5px;
+      right: 32px;
+      padding: 0;
+      cursor: pointer;
+      svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
     .data-placeholder {
+      height: 3ch;
       cursor: text;
       &:before {
         display: block;

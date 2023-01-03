@@ -17,9 +17,7 @@ const Feed = () => {
     const fetchData = async () => {
       try {
         const bestReviews = await getBestReviews();
-        const allReviews = await getAllReviews();
         const latestReviews = await getLatestReviews();
-        setReviews(allReviews);
       } catch ({ response }) {
         Swal.fire({
           title: 'Oops...',

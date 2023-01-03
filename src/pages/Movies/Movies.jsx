@@ -7,15 +7,27 @@ import Row from 'react-bootstrap/Row';
 import CardReview from '../../components/CardReview/CardReview';
 import { Link } from 'react-router-dom';
 import './index.scss';
+import { getAllMovies } from '../../http/reviewsAPI';
+import Skeleton from './Skeleton';
 
 const Movies = () => {
   const [openEqualizer, setOpenEqualizer] = useState(false);
   const [search, setSearch] = useState(false);
+  const [movies, setMovies] = useState([]);
   const ref = useRef(null);
 
   const animationSearch = () => {
     setSearch(!search);
   };
+
+  useEffect(() => {
+    const getMovies = async () => {
+      const { data } = await getAllMovies();
+      setMovies(data);
+      console.log(data);
+    };
+    getMovies();
+  }, []);
 
   useEffect(() => {
     const input = ref.current;
@@ -30,6 +42,8 @@ const Movies = () => {
       }, 1000);
     }
   }, [search]);
+
+  const skeletons = [...new Array(6)].map((_, index) => <Skeleton key={index} />);
 
   return (
     <>
@@ -59,9 +73,7 @@ const Movies = () => {
           </div>
           <MoviesMenu openEqualizer={openEqualizer} />
           <Row xs={1} md={2} className="g-4">
-            {Array.from({ length: 4 }).map((_, idx) => (
-              <CardReview idx={idx} />
-            ))}
+            {movies && movies.map((movie) => <CardReview {...movie} />)}
           </Row>
         </div>
       </div>

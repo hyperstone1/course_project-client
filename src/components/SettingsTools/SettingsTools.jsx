@@ -4,12 +4,22 @@ import { BiHeading } from 'react-icons/bi';
 import { IoMdSettings } from 'react-icons/io';
 import { BsImage } from 'react-icons/bs';
 import { MdDeleteForever } from 'react-icons/md';
-import { changeTool, deleteTool } from '../../store/slices/addReviewSlice/addReview';
+import {
+  setCounterId,
+  addHeaders,
+  addText,
+  changeTool,
+  changeImageTool,
+  deleteTool,
+  deleteHeader,
+  deleteText,
+  deleteUrlImage,
+} from '../../store/slices/addReviewSlice/addReview';
 
 import { useDispatch, useSelector } from 'react-redux';
 import './index.scss';
 
-const SettingsTools = ({ id }) => {
+const SettingsTools = ({ type, id }) => {
   const [settings, setSettings] = useState(false);
   const dispatch = useDispatch();
   const { toolType } = useSelector((state) => state.addReview);
@@ -23,16 +33,34 @@ const SettingsTools = ({ id }) => {
 
   const handleClickSettings = () => {
     setSettings(!settings);
+    console.log(id);
   };
 
   const handleSelectTool = (tool) => {
-    console.log(toolType);
+    console.log(id, toolType);
+    if (type === 'header' && tool === 'text') {
+      dispatch(deleteHeader({ id }));
+      dispatch(addText({ id, text: '' }));
+    }
+    if (type === 'text' && tool === 'header') {
+      dispatch(deleteText({ id }));
+      dispatch(addHeaders({ id, header: '' }));
+    }
+    if (type === 'image' && tool !== 'image') {
+      dispatch(deleteUrlImage({ id }));
+    }
+    if (tool === 'image') {
+      dispatch(changeImageTool({ id, url: null }));
+    }
     dispatch(changeTool({ id, tool }));
     setSettings(false);
   };
   const handleDeleteTool = () => {
     console.log(id);
     dispatch(deleteTool({ id }));
+    dispatch(deleteHeader({ id }));
+    dispatch(deleteText({ id }));
+    dispatch(setCounterId({ id }));
     setSettings(false);
   };
 

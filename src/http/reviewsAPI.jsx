@@ -21,8 +21,8 @@ export const getMusic = async () => {
   return data;
 };
 
-export const getAllReviews = async () => {
-  const { data } = await axios.get(`${host}/api/reviews/best`);
+export const getAllMovies = async () => {
+  const { data } = await axios.get(`${host}/api/reviews/movies`);
   return data;
 };
 
@@ -38,5 +38,53 @@ export const getLatestReviews = async () => {
 
 export const getAllTags = async () => {
   const { data } = await axios.get(`${host}/api/reviews/tags`);
+  return data;
+};
+
+export const createReview = async (
+  reviewType,
+  title,
+  tags,
+  headers,
+  texts,
+  previewCover,
+  reviewImages,
+  coverImage,
+  bufferImgs,
+  bufferCover,
+) => {
+  const { data } = await axios.post(`${host}/api/reviews/create`, {
+    reviewType,
+    title,
+    tags,
+    headers,
+    texts,
+    previewCover,
+    reviewImages,
+    coverImage,
+    bufferImgs,
+    bufferCover: [...bufferCover],
+  });
+  console.log(data);
+  return data;
+};
+
+export const uploadImg = async (uint8Array) => {
+  try {
+    const response = await axios({
+      method: 'post',
+      url: `${host}/api/reviews/create`,
+      data: [...uint8Array], 
+    });
+
+    console.log(response);
+  } catch (e) {
+    console.error(e.message, 'function handleSubmit');
+  }
+};
+
+export const getCoverImages = async (coverURL) => {
+  const { data } = await axios.post(`${host}/api/reviews/cover_image`, { url: coverURL });
+  console.log(data);
   return data;
 };

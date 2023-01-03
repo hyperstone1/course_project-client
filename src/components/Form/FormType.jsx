@@ -218,7 +218,7 @@ const FormType = () => {
           >
             <Form.Label>Have not account yet?</Form.Label>
             <Form.Text onClick={handleRegister} className="sign_in">
-              Sign In
+              Sign Up
             </Form.Text>
           </Form.Group>
         </>
@@ -327,7 +327,7 @@ const FormType = () => {
           >
             <Form.Label>You are already have an account?</Form.Label>
             <Form.Text onClick={handleLogin} className="sign_in">
-              Sign Up
+              Sign In
             </Form.Text>
           </Form.Group>
         </>
