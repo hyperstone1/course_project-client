@@ -21,3 +21,10 @@ export const registration = async (name, email, password) => {
 
   return jwt_decode(data.token);
 };
+
+export const likeReview = async (userId) => {
+  const { data } = await axios.post(`${host}/api/user/like`, {
+    userId,
+  });
+
+};

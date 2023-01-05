@@ -12,7 +12,6 @@ import { AiOutlineLike, AiFillLike } from 'react-icons/ai';
 import { BsBookmark, BsFillBookmarkFill, BsChatFill } from 'react-icons/bs';
 import Loader from './Loader';
 import moment from 'moment';
-import axios from 'axios';
 
 const CardReview = ({ id, title, text, coverURL, createdAt }) => {
   const reviews = [book, movie, game, music];
@@ -38,7 +37,7 @@ const CardReview = ({ id, title, text, coverURL, createdAt }) => {
   };
 
   const handleClickLike = () => {
-    
+
   }
 
   useEffect(() => {

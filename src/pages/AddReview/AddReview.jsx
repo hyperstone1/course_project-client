@@ -27,7 +27,7 @@ const AddReview = () => {
   const [previewCover, setPreviewCover] = useState('');
   const [results, setResults] = useState([]);
   const [title, setTitle] = useState('');
-  const [reviewType, setReviewType] = useState('');
+  const [reviewType, setReviewType] = useState('Кино');
 
   const [bufferImgs, setBufferImgs] = useState([]);
   const [bufferCover, setBufferCover] = useState();
