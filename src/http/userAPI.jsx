@@ -26,5 +26,5 @@ export const likeReview = async (userId) => {
   const { data } = await axios.post(`${host}/api/user/like`, {
     userId,
   });
-
 };
+

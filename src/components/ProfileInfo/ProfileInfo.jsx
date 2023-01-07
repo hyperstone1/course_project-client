@@ -5,12 +5,18 @@ import Select from 'react-select';
 import countryList from 'react-select-country-list';
 import axios from 'axios';
 import { host } from '../../utils/constants';
-import { useSelector } from 'react-redux';
 import { FaSadCry } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import { getReviewByUser } from '../../http/reviewsAPI';
+import jwtDecode from 'jwt-decode';
+import Table from 'react-bootstrap/Table';
+import { setUrl } from '../../store/slices/user/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const ProfileInfo = () => {
   const [userInfo, setUserInfo] = useState();
+  const [userReviews, setUserReviews] = useState([]);
   const [name, setName] = useState();
   const [lastName, setLastName] = useState();
   const [secondName, setSecondName] = useState();
@@ -18,7 +24,11 @@ const ProfileInfo = () => {
   const [city, setCity] = useState();
   const [phone, setPhone] = useState();
   const menuItem = useSelector((state) => state.profile.menuValue);
+  const { token } = useSelector((state) => state.user);
   const options = useMemo(() => countryList().getData(), []);
+  const dispatch = useDispatch();
+  const url = useSelector((state) => state.user.url);
+  const navigate = useNavigate();
 
   const customStyles = {
     input: (styles) => {
@@ -27,10 +37,59 @@ const ProfileInfo = () => {
       }
     },
   };
+  const handleLinkReview = (type, id) => {
+    // if (type === 'Кино') {
+    dispatch(setUrl({ url: 'movies' }));
+    navigate(`/reviews/${id}`);
+    // }
+    // if (type === 'Книги') {
+    //   navigate(`/books/${id}`);
+    // }
+    // if (type === 'Игры') {
+    //   navigate(`/games/${id}`);
+    // }
+    // if (type === 'Музыка') {
+    //   navigate(`/music/${id}`);
+    // }
+  };
 
   useEffect(() => {
-    const { data } = axios.get(`${host}/api/user/getInfo`);
-    setUserInfo(data);
+    // const { data } = axios.get(`${host}/api/user/getInfo`);
+    // setUserInfo(data);
+  }, []);
+
+  useEffect(() => {
+    if (token) {
+      const { id } = jwtDecode(token);
+      const fetchReviews = async () => {
+        const data = await getReviewByUser(id);
+        setUserReviews(data);
+        console.log(data);
+      };
+      fetchReviews();
+    }
+  }, [token]);
+
+  useEffect(() => {
+    setUserReviews(
+      userReviews.map((item) => {
+        // console.log(window.location.pathname);
+        if (item.type === 'Кино') {
+          item.url = '/movies';
+          // dispatch(setUrl('/movies'));
+          // console.log(document.location.search);
+        }
+        if (item.type === 'Игры') {
+          dispatch(setUrl('/games'));
+        }
+        if (item.type === 'Книги') {
+          dispatch(setUrl('/books'));
+        }
+        if (item.type === 'Музыка') {
+          dispatch(setUrl('/music'));
+        }
+      }),
+    );
   }, []);
 
   const handleChangeCountry = (value) => {
@@ -38,15 +97,15 @@ const ProfileInfo = () => {
   };
 
   const setInfoHandler = async () => {
-    const { data } = await axios.post(`${host}/api/user/setInfo`, {
-      name,
-      lastName,
-      secondName,
-      country,
-      city,
-      phone,
-    });
-    console.log(data);
+    // const { data } = await axios.post(`${host}/api/user/setInfo`, {
+    //   name,
+    //   lastName,
+    //   secondName,
+    //   country,
+    //   city,
+    //   phone,
+    // });
+    // console.log(data);
   };
   return (
     <>
@@ -102,18 +161,50 @@ const ProfileInfo = () => {
           </div>
         </div>
       )}
-      {menuItem === 'reviews' && (
-        <div className="reviews no_info">
-          <div style={{ fontSize: '24px' }}>You don't have any posts</div>
-          <FaSadCry style={{ width: '40px', height: '40px' }} />
+      {menuItem === 'reviews' &&
+        (userReviews && userReviews.length > 0 ? (
+          <Table striped bordered hover size="sm">
+            <thead>
+              <tr>
+                <th>id</th>
+                <th>Review title</th>
+                <th>Rating</th>
+                <th>Likes</th>
+                <th>Link</th>
+              </tr>
+            </thead>
 
-          <Link to="">click here to create a post</Link>
-        </div>
-      )}
+            <tbody>
+              {userReviews.map((item) => (
+                <tr>
+                  <td>{item.id}</td>
+                  <td>{item.title}</td>
+                  <td>{item.rating}</td>
+                  <td>{item.likes}</td>
+                  <td>
+                    <span
+                      onClick={() => handleLinkReview(item.type, item.id)}
+                      style={{ color: 'blue', cursor: 'pointer' }}
+                    >
+                      Open
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        ) : (
+          <div className="reviews no_info">
+            <div style={{ fontSize: '24px' }}>You don't have any posts</div>
+            <FaSadCry style={{ width: '40px', height: '40px' }} />
+
+            <Link to="">click here to create a post</Link>
+          </div>
+        ))}
       {menuItem === 'comments' && (
         <div className="comments no_info">
           <div style={{ fontSize: '24px' }}>You don't have any comments</div>
-          <FaSadCry style={{ width: '40px', height: '40px' }}/>
+          <FaSadCry style={{ width: '40px', height: '40px' }} />
         </div>
       )}
     </>

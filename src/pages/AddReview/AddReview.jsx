@@ -16,9 +16,15 @@ import {
   editHeader,
   addText,
   editText,
+  clearReviewState,
 } from '../../store/slices/addReviewSlice/addReview';
 import SettingsTools from '../../components/SettingsTools/SettingsTools';
 import { createReview } from '../../http/reviewsAPI';
+import StarRating from '../../components/StarRating/StarRating';
+import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
+import jwtDecode from 'jwt-decode';
+import { setUser } from '../../store/slices/user/userSlice';
 
 const AddReview = () => {
   const [drag, setDrag] = useState(false);
@@ -46,8 +52,18 @@ const AddReview = () => {
   const headerRef = useRef(null);
 
   const dispatch = useDispatch();
-  const { tools, headers, texts } = useSelector((state) => state.addReview);
+  const navigate = useNavigate();
+  const { tools, headers, texts, rating } = useSelector((state) => state.addReview);
+  const { token } = useSelector((state) => state.user);
   const { id } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const user = jwtDecode(localStorage.getItem('token'));
+      dispatch(setUser({ id: user.id, email: user.email, token }));
+    }
+  }, []);
 
   useEffect(() => {
     setImagesTool(tools.filter((tool) => tool.type === 'image'));
@@ -193,25 +209,49 @@ const AddReview = () => {
   };
 
   const handleSendReview = async () => {
-    setReview({ reviewType, title, tags, headers, texts, previewCover, reviewImages, coverImage });
-    console.log(bufferImgs);
-    console.log(bufferCover);
+    setReview({
+      id,
+      reviewType,
+      title,
+      tags,
+      headers,
+      texts,
+      rating,
+      previewCover,
+      reviewImages,
+      coverImage,
+    });
+
+    const { name } = jwtDecode(token);
+    console.log(name);
 
     try {
       const response = await createReview(
         id,
+        name,
         reviewType,
         title,
         tags,
         headers,
         texts,
-        coverImage,
+        rating,
         bufferImgs,
         bufferCover,
       );
+      Swal.fire({
+        title: 'Successfully!',
+        text: 'Review successfully added.',
+      });
+      dispatch(clearReviewState());
+      navigate('/');
       console.log(response);
     } catch (error) {
       console.log(error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: { error },
+      });
     }
   };
 
@@ -412,6 +452,10 @@ const AddReview = () => {
                 )}
               </div>
             )}
+            <div className="rating">
+              <h3>How would you rate it?</h3>
+              <StarRating />
+            </div>
             <Button onClick={handleSendReview} variant="outline-success">
               Publish
             </Button>

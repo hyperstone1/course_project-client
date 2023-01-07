@@ -4,10 +4,10 @@ const initialState = {
   toolType: 'text',
   menuVisibillity: 'false',
   tools: [],
-  title: '',
   headers: [],
   texts: [],
   counterId: 0,
+  rating: 0,
 };
 
 const addReviewSlice = createSlice({
@@ -30,6 +30,8 @@ const addReviewSlice = createSlice({
     setTools: (state, action) => {
       state.tools.push(action.payload);
     },
+
+
     changeTool: (state, action) => {
       state.tools = state.tools.map((item) =>
         item.id === action.payload.id ? { ...item, type: action.payload.tool } : item,
@@ -80,6 +82,16 @@ const addReviewSlice = createSlice({
     deleteText: (state, action) => {
       state.texts = state.texts.filter((item) => item.id !== action.payload.id);
     },
+    setRating: (state, action) => {
+      state.rating = action.payload.rating;
+    },
+    clearReviewState: (state) => {
+      state.tools = [];
+      state.headers = [];
+      state.texts = [];
+      state.counterId = 0;
+      state.rating = 0;
+    },
   },
 });
 
@@ -98,5 +110,7 @@ export const {
   editText,
   deleteUrlImage,
   deleteText,
+  setRating,
+  clearReviewState,
 } = addReviewSlice.actions;
 export default addReviewSlice.reducer;

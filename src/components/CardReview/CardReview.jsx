@@ -12,14 +12,17 @@ import { AiOutlineLike, AiFillLike } from 'react-icons/ai';
 import { BsBookmark, BsFillBookmarkFill, BsChatFill } from 'react-icons/bs';
 import Loader from './Loader';
 import moment from 'moment';
+import { AiFillStar } from 'react-icons/ai';
+import { useNavigate } from 'react-router-dom';
 
-const CardReview = ({ id, title, text, coverURL, createdAt }) => {
+const CardReview = ({ id, userName, type, title, text, rating, coverURL, createdAt }) => {
   const reviews = [book, movie, game, music];
   const [like, setLike] = useState(false);
   const [openComments, setOpenComments] = useState(false);
   const [save, setSave] = useState(false);
   const [textReview, setTextReview] = useState('');
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const img = useRef(null);
 
@@ -36,9 +39,13 @@ const CardReview = ({ id, title, text, coverURL, createdAt }) => {
     }
   };
 
-  const handleClickLike = () => {
+  const handleClickLike = () => {};
 
-  }
+  const handleClickReview = () => {
+    // const url = document.location.pathname;
+    // navigate(`${url}/${id}`);
+    navigate(`/reviews/${id}`);
+  };
 
   useEffect(() => {
     if (text) {
@@ -62,21 +69,25 @@ const CardReview = ({ id, title, text, coverURL, createdAt }) => {
   return (
     <Col key={id}>
       <Card>
-        <div className="card_img">
+        <div onClick={handleClickReview} className="card_img">
+          <div className="rate">
+            <AiFillStar />
+            <div className="rating_number">{rating}</div>
+          </div>
           <Card.Img ref={img} variant="top" src={coverURL} onLoad={() => handleLoaded()} />
           {loading && <Loader />}
         </div>
         <Card.Body>
           <Card.Subtitle className="mb-2 text-muted">
             <div className="title_review">
-              <CgNotes /> <span>Review</span>
+              <CgNotes /> <span>{type}</span>
             </div>
-            <span>Reviewer</span>
+            <span>{userName}</span>
           </Card.Subtitle>
           <Card.Title>{title}</Card.Title>
           <Card.Text>{textReview}</Card.Text>
           <Card.Text className="footer_card">
-            <span>{moment().format('DD MMM YYYY', createdAt)}</span>
+            <span>{moment(createdAt).format('DD MMM YYYY')}</span>
             <div className="icons" onClick={(e) => handleClickIcons(e)}>
               <div className="save">
                 {save ? <BsFillBookmarkFill className="save" /> : <BsBookmark className="save" />}

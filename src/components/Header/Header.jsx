@@ -81,9 +81,21 @@ const Header = () => {
               </Link>
             </Nav.Link>
 
-            <Nav.Link href="#action3">Games</Nav.Link>
-            <Nav.Link href="#action4">Books</Nav.Link>
-            <Nav.Link href="#action5">Music</Nav.Link>
+            <Nav.Link>
+              <Link className="menu-link" to="/games">
+                Games
+              </Link>
+            </Nav.Link>
+            <Nav.Link>
+              <Link className="menu-link" to="/books">
+                Books
+              </Link>
+            </Nav.Link>
+            <Nav.Link>
+              <Link className="menu-link" to="/music">
+                Music
+              </Link>
+            </Nav.Link>
           </Nav>
           <Form className="d-flex">
             <Form.Control type="search" placeholder="Search" className="me-2" aria-label="Search" />

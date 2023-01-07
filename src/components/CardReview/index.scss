@@ -41,4 +41,17 @@
       transform: scale(1.2);
     }
   }
+  .rate {
+    position: absolute;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    color: #ffff;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 0, 0, 0.966);
+    // background-color: rgb(4 4 4 / 25%);
+    border-bottom-left-radius: 5px;
+  }
 }
