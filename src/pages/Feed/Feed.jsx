@@ -12,21 +12,29 @@ import jwtDecode from 'jwt-decode';
 import { setUser } from '../../store/slices/user/userSlice';
 import { AiOutlineArrowRight } from 'react-icons/ai';
 import { useNavigate } from 'react-router-dom';
+import { setReviewLikes } from '../../store/slices/reviewSlice/review';
+import { userAllLikes } from '../../http/userAPI';
+import { setUserLikes } from '../../store/slices/reviewSlice/review';
 
 const Feed = () => {
   const dispatch = useDispatch();
   const filter = useSelector((state) => state.filter.filterValue);
+  const userId = useSelector((state) => state.user.id);
   const navigate = useNavigate();
   const [reviews, setReviews] = useState();
   const [latestReviews, setLatestReviews] = useState();
+  const [likesByUser, setLikesByUser] = useState();
+  const { reviewLikes, userLikes } = useSelector((state) => state.review);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         // const bestReviews = await getBestReviews();
         // const latestReviews = await getLatestReviews();
+        console.log('userId: ', userId);
         const allReviews = await getAllReviews();
         console.log(allReviews);
+
         setReviews(allReviews);
       } catch ({ response }) {
         Swal.fire({
@@ -37,6 +45,31 @@ const Feed = () => {
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const fetchLikes = async () => {
+      if (userId) {
+        const likesByUser = await userAllLikes(userId);
+        setLikesByUser(likesByUser);
+      }
+    };
+    fetchLikes();
+  }, [userId]);
+
+  useEffect(() => {
+    if (reviews) {
+      reviews.map((item) => {
+        console.log(item.id);
+        dispatch(setReviewLikes({ id: item.id, likes: item.likes }));
+      });
+    }
+    if (likesByUser) {
+      console.log(likesByUser);
+      likesByUser.map((item) => {
+        dispatch(setUserLikes({ id: item.idReview }));
+      });
+    }
+  }, [reviews, likesByUser]);
 
   const handleClickShow = () => {
     navigate(`${filter}/`);

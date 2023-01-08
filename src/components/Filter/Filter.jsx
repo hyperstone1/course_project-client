@@ -20,6 +20,7 @@ const Filter = ({ reviews }) => {
   const handleChangeFilter = (k) => {
     setKey(k);
   };
+
   return reviews ? (
     <Tabs
       id="controlled-tab-example"
@@ -33,13 +34,19 @@ const Filter = ({ reviews }) => {
         </Row>
       </Tab>
       <Tab eventKey="games" title="Games">
-        {reviews.map((item) => (item.type === 'Игры' ? <CardReview {...item} /> : null))}
+        <Row xs={1} md={2} className="g-4 grid">
+          {reviews.map((item) => (item.type === 'Игры' ? <CardReview {...item} /> : null))}
+        </Row>
       </Tab>
       <Tab eventKey="books" title="Books">
-        {reviews.map((item) => (item.type === 'Книги' ? <CardReview {...item} /> : null))}
+        <Row xs={1} md={2} className="g-4 grid">
+          {reviews.map((item) => (item.type === 'Книги' ? <CardReview {...item} /> : null))}
+        </Row>
       </Tab>
       <Tab eventKey="music" title="Music">
-        {reviews.map((item) => (item.type === 'Музыка' ? <CardReview {...item} /> : null))}
+        <Row xs={1} md={2} className="g-4 grid">
+          {reviews.map((item) => (item.type === 'Музыка' ? <CardReview {...item} /> : null))}
+        </Row>
       </Tab>
     </Tabs>
   ) : null;

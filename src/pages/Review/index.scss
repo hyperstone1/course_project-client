@@ -87,6 +87,11 @@
         padding: 15px 0px;
         font-size: 22px;
       }
+      .header {
+        text-align: center;
+        margin-top: 15px;
+        margin-bottom: 00px;
+      }
       .review_image {
         width: 100%;
         img {
@@ -112,6 +117,24 @@
     .rate_review {
       display: flex;
       align-items: center;
+      .buttons {
+        margin-left: 15px;
+        display: flex;
+        gap: 15px;
+        .save,
+        .cancel {
+          padding: 10px 15px;
+          background-color: transparent;
+          border: 1px solid rgb(78, 155, 78);
+          color: rgb(78, 155, 78);
+          border-radius: 5px;
+          transition: 0.4s;
+          &:hover {
+            background-color: rgb(78, 155, 78);
+            color: white;
+          }
+        }
+      }
     }
     .rating {
       display: flex;

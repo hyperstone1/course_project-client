@@ -4,6 +4,7 @@ import book from '../../images/book.jpg';
 import movie from '../../images/movie.jpg';
 import game from '../../images/games.jpg';
 import './index.scss';
+
 const NewReviews = () => {
   return (
     <Carousel fade>

@@ -1,11 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
-import book from '../../images/book.jpg';
-import movie from '../../images/movie.jpg';
-import game from '../../images/games.jpg';
-import music from '../../images/music.jpg';
-import './index.scss';
 import { CgNotes } from 'react-icons/cg';
 import { FaRegComment } from 'react-icons/fa';
 import { AiOutlineLike, AiFillLike } from 'react-icons/ai';
@@ -14,28 +9,55 @@ import Loader from './Loader';
 import moment from 'moment';
 import { AiFillStar } from 'react-icons/ai';
 import { useNavigate } from 'react-router-dom';
+import { likeReview } from '../../http/userAPI';
+import { useDispatch, useSelector } from 'react-redux';
+import { changeReviewLikes, changeUserLikes } from '../../store/slices/reviewSlice/review';
+import Swal from 'sweetalert2';
+import './index.scss';
 
-const CardReview = ({ id, userName, type, title, text, rating, coverURL, createdAt }) => {
-  const reviews = [book, movie, game, music];
+const CardReview = ({ id, userName, type, title, text, rating, coverURL, likes, createdAt }) => {
   const [like, setLike] = useState(false);
-  const [openComments, setOpenComments] = useState(false);
   const [save, setSave] = useState(false);
   const [textReview, setTextReview] = useState('');
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
+  const idUser = useSelector((state) => state.user.id);
+  const [likesCount, setLikesCount] = useState(likes);
+  const { reviewLikes, userLikes } = useSelector((state) => state.review);
   const img = useRef(null);
 
-  const [coverImg, setCoverImg] = useState('');
-  const [url, setUrl] = useState();
+  useEffect(() => {
+    reviewLikes.map((item) => (item.id === id ? setLikesCount(item.likes) : null));
+    const isExist = userLikes.filter((item) => item.idReview === id);
+    console.log(isExist);
+    if (isExist.length > 0) {
+      setLike(true);
+    } else {
+      setLike(false);
+    }
+  }, [reviewLikes]);
 
-  const handleClickIcons = (e) => {
+  const handleClickIcons = async (e, id) => {
     const saveSVG = e.target.closest('.save');
     const likeSVG = e.target.closest('.like');
     if (saveSVG) {
       setSave(!save);
     } else if (likeSVG) {
-      setLike(!like);
+      // if (like) {
+      //   setLike(!like);
+      // }
+      const likes = await likeReview(id, idUser);
+      if (likes.message) {
+        Swal.fire({
+          title: 'Sorry...',
+          text: `${likes.message}`,
+        });
+      } else {
+        dispatch(changeReviewLikes({ id: id, likes: likes }));
+        dispatch(changeUserLikes({ id: id }));
+        setLikesCount(likes);
+      }
     }
   };
 
@@ -88,7 +110,7 @@ const CardReview = ({ id, userName, type, title, text, rating, coverURL, created
           <Card.Text>{textReview}</Card.Text>
           <Card.Text className="footer_card">
             <span>{moment(createdAt).format('DD MMM YYYY')}</span>
-            <div className="icons" onClick={(e) => handleClickIcons(e)}>
+            <div className="icons" onClick={(e) => handleClickIcons(e, id)}>
               <div className="save">
                 {save ? <BsFillBookmarkFill className="save" /> : <BsBookmark className="save" />}
               </div>
@@ -97,7 +119,8 @@ const CardReview = ({ id, userName, type, title, text, rating, coverURL, created
                   <AiFillLike className="like" style={{ width: '20px', height: '20px' }} />
                 ) : (
                   <AiOutlineLike className="like" style={{ width: '20px', height: '20px' }} />
-                )}
+                )}{' '}
+                <div className="likes_count">{likesCount}</div>
               </div>
               <div className="comment">
                 <FaRegComment className="comment" />

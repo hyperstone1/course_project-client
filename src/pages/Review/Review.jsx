@@ -2,35 +2,51 @@ import React, { useState, useEffect } from 'react';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import moment from 'moment';
-import { getReview } from '../../http/reviewsAPI';
+import { getReview, ratingByUser } from '../../http/reviewsAPI';
 import { useParams } from 'react-router-dom';
 import './index.scss';
 import { AiFillHeart } from 'react-icons/ai';
 import { BsBookmark } from 'react-icons/bs';
 import StarRating from '../../components/StarRating/StarRating';
 import { AiFillStar } from 'react-icons/ai';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import EditReview from '../EditReview/EditReview';
+import { ratingReview } from '../../http/reviewsAPI';
+import {
+  clearRating,
+  setExistRating,
+  setHover,
+  setTypeRating,
+} from '../../store/slices/reviewSlice/review';
 
 const Review = () => {
   const [content, setContent] = useState();
   const [like, setLike] = useState();
   const userId = useSelector((state) => state.user.id);
   const [edit, setEdit] = useState(false);
-  const navigate = useNavigate();
-
+  const { token } = useSelector((state) => state.user);
   const [review, setReview] = useState();
   const params = useParams();
   const reviewId = params.id;
+  const { rating, existRating } = useSelector((state) => state.review);
+  const dispatch = useDispatch();
 
   const handleLikeReview = () => {
     setLike(!like);
   };
 
-  const handleClickEdit = () => {
-    // navigate(`reviews/edit/${reviewId}`)
-  };
+  useEffect(() => {
+    if (userId) {
+      const fetchRating = async () => {
+        const ratingReviewUser = await ratingByUser(userId, reviewId);
+        console.log(ratingReviewUser);
+        dispatch(setExistRating({ rating: ratingReviewUser }));
+        dispatch(setHover(ratingReviewUser));
+      };
+      fetchRating();
+    }
+    dispatch(setTypeRating('user'));
+  }, [userId, reviewId, dispatch]);
 
   useEffect(() => {
     const fetchReview = async () => {
@@ -40,7 +56,19 @@ const Review = () => {
       setContent(reviewsContent);
     };
     fetchReview();
-  }, []);
+  }, [rating, reviewId]);
+
+  const handleClickSave = async () => {
+    const save = await ratingReview(userId, reviewId, rating);
+    dispatch(clearRating());
+    dispatch(setExistRating({ rating }));
+
+    console.log(save);
+  };
+  const handleClickCancel = () => {
+    dispatch(clearRating());
+    dispatch(setHover(existRating));
+  };
 
   return review ? (
     <div className="review">
@@ -86,9 +114,7 @@ const Review = () => {
                 {content
                   ? content.map((item) => (
                       <div key={item.id} className="content_tool">
-                        {item.type === 'header' ? (
-                          <div className="header">{item.header}</div>
-                        ) : null}
+                        {item.type === 'header' ? <h2 className="header">{item.header}</h2> : null}
                         {item.type === 'text' ? <div className="text">{item.text}</div> : null}
                         {item.type === 'image' ? (
                           <div className="review_image">
@@ -106,12 +132,24 @@ const Review = () => {
                   <AiFillStar />
                 </div>
               </div>
-              {userId !== review.idUser ? (
-                <div className="rate_review">
-                  <h4>Rate this review</h4>
-                  <StarRating />
-                </div>
-              ) : null}
+              {userId !== review.idUser
+                ? token && (
+                    <div className="rate_review">
+                      <h4>Rate this review</h4>
+                      <StarRating />
+                      {rating ? (
+                        <div className="buttons">
+                          <button className="save" onClick={handleClickSave}>
+                            OK
+                          </button>
+                          <button className="cancel" onClick={handleClickCancel}>
+                            Cancel
+                          </button>
+                        </div>
+                      ) : null}
+                    </div>
+                  )
+                : null}
             </>
           )}
         </div>

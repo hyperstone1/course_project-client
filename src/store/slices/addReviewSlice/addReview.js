@@ -31,7 +31,6 @@ const addReviewSlice = createSlice({
       state.tools.push(action.payload);
     },
 
-
     changeTool: (state, action) => {
       state.tools = state.tools.map((item) =>
         item.id === action.payload.id ? { ...item, type: action.payload.tool } : item,

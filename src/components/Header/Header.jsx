@@ -15,6 +15,8 @@ import { setLang, setTheme } from '../../store/slices/headerSlice/headerSlice';
 import { RiPaletteLine, RiPaletteFill } from 'react-icons/ri';
 import jwt_decode from 'jwt-decode';
 import { setLogin } from '../../store/slices/auth/authSlice';
+import { removeUser } from '../../store/slices/user/userSlice';
+import { clearLikes } from '../../store/slices/reviewSlice/review';
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -45,6 +47,8 @@ const Header = () => {
   };
   const handleClickLogOut = () => {
     localStorage.clear();
+    dispatch(removeUser());
+    dispatch(clearLikes());
     navigate('/');
     setLogout(true);
     setUserName('user');

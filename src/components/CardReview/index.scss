@@ -22,13 +22,24 @@
   .icons {
     display: flex;
     align-items: center;
-
     gap: 10px;
     svg,
     img {
       width: 18px;
       height: 18px;
+    }
+    .like,
+    .comment,
+    .save {
+      display: flex;
+      align-items: center;
       cursor: pointer;
+    }
+    .like {
+      .likes_count {
+        margin-left: 3px;
+        font-size: 17px;
+      }
     }
   }
 }

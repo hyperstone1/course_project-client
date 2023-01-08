@@ -99,9 +99,15 @@ export const getReviewByUser = async (id) => {
   console.log(data);
   return data;
 };
+
+export const getLikesReview = async (id) => {
+  const { data } = await axios.post(`${host}/api/reviews/likes_by_review`, { id });
+  console.log(data);
+  return data;
+};
+
 export const updateReview = async (
-  id,
-  name,
+  reviewId,
   reviewType,
   title,
   tags,
@@ -110,10 +116,11 @@ export const updateReview = async (
   rating,
   bufferImgs,
   bufferCover,
+  imagesTool,
+  previewCover,
 ) => {
   const { data } = await axios.post(`${host}/api/reviews/update_review`, {
-    id,
-    name,
+    reviewId,
     reviewType,
     title,
     tags,
@@ -121,7 +128,36 @@ export const updateReview = async (
     texts,
     rating,
     bufferImgs,
-    bufferCover: [...bufferCover],
+    bufferCover: bufferCover ? [...bufferCover] : null,
+    imagesTool,
+    previewCover,
+  });
+  console.log(data);
+  return data;
+};
+
+export const ratingReview = async (userId, reviewId, rating) => {
+  const { data } = await axios.post(`${host}/api/reviews/rating_review`, {
+    userId,
+    reviewId,
+    rating,
+  });
+  console.log(data);
+  return data;
+};
+
+export const ratingByUser = async (userId, reviewId) => {
+  const { data } = await axios.post(`${host}/api/reviews/rating_by_user`, {
+    userId,
+    reviewId,
+  });
+  console.log(data);
+  return data;
+};
+
+export const ratingAuthor = async (userId, reviewId) => {
+  const { data } = await axios.post(`${host}/api/reviews/rating_author`, {
+    userId,
   });
   console.log(data);
   return data;

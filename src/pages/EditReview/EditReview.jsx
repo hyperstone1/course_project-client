@@ -22,8 +22,9 @@ import SettingsTools from '../../components/SettingsTools/SettingsTools';
 import StarRating from '../../components/StarRating/StarRating';
 import Swal from 'sweetalert2';
 import jwtDecode from 'jwt-decode';
-import { getReview } from '../../http/reviewsAPI';
+import { getReview, updateReview } from '../../http/reviewsAPI';
 import { useParams, useNavigate } from 'react-router-dom';
+import { setTypeRating } from '../../store/slices/reviewSlice/review';
 
 const EditReview = ({ edit, setEdit }) => {
   const [drag, setDrag] = useState(false);
@@ -70,6 +71,7 @@ const EditReview = ({ edit, setEdit }) => {
       console.log(data);
       setReview(data[0]);
       setTitle(data[0].title);
+      setReviewType(data[0].type);
       console.log(data[0].coverURL);
       setPreviewCover(data[0].coverURL);
       setCoverImage(data[0].coverURL);
@@ -81,17 +83,14 @@ const EditReview = ({ edit, setEdit }) => {
           dispatch(addText({ id: item.id, text: item.text }));
         }
         if (item.type === 'header') {
-          dispatch(addText({ id: item.id, header: item.header }));
+          dispatch(addHeaders({ id: item.id, header: item.header }));
         }
-        // toolsReview.push();
-        dispatch(setTools({ id: item.id, type: item.type }));
-        if (item.type === 'image') {
-          dispatch(changeImageTool({ id, url: item.url }));
-        }
+        dispatch(setTools({ id: item.id, type: item.type, url: item.url }));
         dispatch(setCounterId());
       });
       setContent(reviewsContent);
     };
+    dispatch(setTypeRating('author'));
 
     fetchReview();
   }, []);
@@ -230,55 +229,46 @@ const EditReview = ({ edit, setEdit }) => {
       console.log(id);
       dispatch(editHeader({ id, header: e.currentTarget.textContent }));
     }
+    console.log('e.target.value: ', e.target.value);
+    console.log('e.currentTarget.textContent: ', e.currentTarget.textContent);
+
     if (type === 'text') {
       dispatch(editText({ id, text: e.currentTarget.textContent }));
     }
   };
 
   const handleSendReview = async () => {
-    setReview({
-      id,
-      reviewType,
-      title,
-      tags,
-      headers,
-      texts,
-      rating,
-      previewCover,
-      reviewImages,
-      coverImage,
-    });
-
     const { name } = jwtDecode(token);
     console.log(name);
 
     try {
-      //   const response = await updateReview(
-      //     id,
-      //     name,
-      //     reviewType,
-      //     title,
-      //     tags,
-      //     headers,
-      //     texts,
-      //     rating,
-      //     bufferImgs,
-      //     bufferCover,
-      //   );
-      //   Swal.fire({
-      //     title: 'Successfully!',
-      //     text: 'Review successfully added.',
-      //   });
-      //   // navigate('/');
-      //   console.log(response);
+      const response = await updateReview(
+        reviewId,
+        reviewType,
+        title,
+        tags,
+        headers,
+        texts,
+        rating,
+        bufferImgs,
+        bufferCover,
+        imagesTool,
+        previewCover,
+      );
+      Swal.fire({
+        title: 'Successfully!',
+        text: 'Review successfully added.',
+      });
+      navigate('/');
+      console.log(response);
       dispatch(clearReviewState());
       setEdit(false);
-    } catch (error) {
-      console.log(error);
+    } catch ({ response }) {
+      console.log(response);
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: { error },
+        text: { response },
       });
     }
   };
@@ -396,8 +386,9 @@ const EditReview = ({ edit, setEdit }) => {
                           key={obj.id}
                           contentEditable={true}
                           className="text"
-                          value={obj.text}
-                          onInput={(e) => handleEditTool(e, tool.id, tool.type)}
+                          // value={obj.text}
+                          suppressContentEditableWarning={true}
+                          onBlur={(e) => handleEditTool(e, tool.id, tool.type)}
                         >
                           {obj.text}
                         </div>
@@ -416,8 +407,11 @@ const EditReview = ({ edit, setEdit }) => {
                           className={obj.header ? 'text' : 'text data-placeholder'}
                           value={obj.header}
                           data-placeholder="Заголовок"
-                          onInput={(e) => handleEditTool(e, tool.id, tool.type)}
-                        />
+                          suppressContentEditableWarning={true}
+                          onBlur={(e) => handleEditTool(e, tool.id, tool.type)}
+                        >
+                          {obj.header}
+                        </h3>
                       ),
                   )
                 : null}
@@ -471,7 +465,12 @@ const EditReview = ({ edit, setEdit }) => {
                     </div>
                   ) : null} */}
 
-              <SettingsTools type={tool.type} id={tool.id} />
+              <SettingsTools
+                type={tool.type}
+                id={tool.id}
+                imagesTool={imagesTool}
+                setImagesTool={setImagesTool}
+              />
             </div>
           ))}
           <Typography setHeader={setHeader} setText={setText} />

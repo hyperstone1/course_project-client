@@ -19,7 +19,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import './index.scss';
 
-const SettingsTools = ({ type, id }) => {
+const SettingsTools = ({ type, id, imagesTool, setImagesTool }) => {
   const [settings, setSettings] = useState(false);
   const dispatch = useDispatch();
   const { toolType } = useSelector((state) => state.addReview);
@@ -37,12 +37,12 @@ const SettingsTools = ({ type, id }) => {
   };
 
   const handleSelectTool = (tool) => {
-    console.log(id, toolType);
-    if (type === 'header' && tool === 'text') {
+    console.log(id, type);
+    if ((type === 'header' && tool === 'text') || tool === 'image') {
       dispatch(deleteHeader({ id }));
       dispatch(addText({ id, text: '' }));
     }
-    if (type === 'text' && tool === 'header') {
+    if ((type === 'text' && tool === 'header') || tool === 'image') {
       dispatch(deleteText({ id }));
       dispatch(addHeaders({ id, header: '' }));
     }
@@ -60,6 +60,7 @@ const SettingsTools = ({ type, id }) => {
     dispatch(deleteTool({ id }));
     dispatch(deleteHeader({ id }));
     dispatch(deleteText({ id }));
+    setImagesTool(imagesTool.filter((item) => item.id !== id));
     dispatch(setCounterId({ id }));
     setSettings(false);
   };
