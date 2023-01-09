@@ -5,7 +5,6 @@ import Button from 'react-bootstrap/Button';
 import Header from '../../components/Header/Header';
 import { FiDownload } from 'react-icons/fi';
 import { RxCrossCircled } from 'react-icons/rx';
-import { AiFillEdit } from 'react-icons/ai';
 import debounce from 'lodash/debounce';
 import { getAllTags } from '../../http/reviewsAPI';
 import Typography from '../../components/Typography/Typography';
@@ -45,7 +44,6 @@ const AddReview = () => {
 
   const [text, setText] = useState('');
   const [imagesTool, setImagesTool] = useState([]);
-  const [review, setReview] = useState([]);
 
   const inputEl = useRef(null);
   const inputTagRef = useRef(null);
@@ -65,6 +63,7 @@ const AddReview = () => {
       const user = jwtDecode(localStorage.getItem('token'));
       dispatch(setUser({ id: user.id, email: user.email, token }));
     }
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -81,6 +80,7 @@ const AddReview = () => {
         setHeader('');
       }
     }
+    // eslint-disable-next-line
   }, [tools]);
 
   useEffect(() => {
@@ -93,6 +93,7 @@ const AddReview = () => {
         setText('');
       }
     }
+    // eslint-disable-next-line
   }, [tools]);
 
   useEffect(() => {
@@ -108,6 +109,7 @@ const AddReview = () => {
     } else {
       setPreviewCover(null);
     }
+    // eslint-disable-next-line
   }, [coverImage]);
 
   function dragStartHandler(e) {
@@ -211,24 +213,9 @@ const AddReview = () => {
   };
 
   const handleSendReview = async () => {
-    setReview({
-      id,
-      reviewType,
-      title,
-      tags,
-      headers,
-      texts,
-      rating,
-      previewCover,
-      reviewImages,
-      coverImage,
-    });
-
     const { name } = jwtDecode(token);
-    console.log(name);
-
     try {
-      const response = await createReview(
+      await createReview(
         id,
         name,
         reviewType,
@@ -246,7 +233,6 @@ const AddReview = () => {
       });
       dispatch(clearReviewState());
       navigate('/');
-      console.log(response);
     } catch (error) {
       console.log(error);
       Swal.fire({
@@ -256,10 +242,6 @@ const AddReview = () => {
       });
     }
   };
-
-  useEffect(() => {
-    console.log(tools);
-  }, [tools]);
 
   return (
     <>
@@ -301,10 +283,11 @@ const AddReview = () => {
                       )
                     : null}
                   {tool.type === 'header'
-                    ? // eslint-disable-next-line
+                    ? 
                       headers.map(
                         (obj) =>
                           obj.id === tool.id && (
+                            // eslint-disable-next-line
                             <h3
                               key={obj.id}
                               ref={headerRef}

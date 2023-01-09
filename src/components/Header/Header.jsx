@@ -23,7 +23,6 @@ const Header = () => {
   const lang = useSelector((state) => state.header.language);
   const theme = useSelector((state) => state.header.theme);
   const navigate = useNavigate();
-  const [clickUser, setClickUser] = useState();
   const [isUser, setIsUser] = useState(false);
   const [logout, setLogout] = useState(false);
   const [userName, setUserName] = useState('user');

@@ -31,7 +31,7 @@ import {
   setHover,
 } from '../../store/slices/reviewSlice/review';
 
-const EditReview = ({ edit, setEdit }) => {
+const EditReview = ({  setEdit }) => {
   const [drag, setDrag] = useState(false);
   const [reviewImages, setReviewImages] = useState([]);
   const [coverImage, setCoverImage] = useState();
@@ -62,9 +62,6 @@ const EditReview = ({ edit, setEdit }) => {
   const { token } = useSelector((state) => state.user);
   const { rating, existRating } = useSelector((state) => state.review);
 
-  const userId = useSelector((state) => state.user.id);
-  const [content, setContent] = useState();
-  const [path, setPath] = useState('');
   const params = useParams();
   const reviewId = params.id;
   const lang = useSelector((state) => state.header.language);
@@ -77,20 +74,17 @@ const EditReview = ({ edit, setEdit }) => {
   useEffect(() => {
     const fetchReview = async () => {
       const { data, reviewsContent } = await getReview(reviewId);
-      console.log(data);
       setReview(data[0]);
       setTitle(data[0].title);
       setReviewType(data[0].type);
-      console.log(data[0].coverURL);
       setPreviewCover(data[0].coverURL);
       setCoverImage(data[0].coverURL);
       setTags(data[0].tags);
       dispatch(setExistRating({ rating: data[0].rating }));
       dispatch(setHover(data[0].rating));
-
+      // eslint-disable-next-line
       await reviewsContent.map((item) => {
         if (item.type === 'text') {
-          // texts.push({ id: item.id, text: item.text });
           dispatch(addText({ id: item.id, text: item.text }));
         }
         if (item.type === 'header') {
@@ -99,35 +93,34 @@ const EditReview = ({ edit, setEdit }) => {
         dispatch(setTools({ id: item.id, type: item.type, url: item.url }));
         dispatch(setCounterId());
       });
-      setContent(reviewsContent);
     };
     dispatch(setTypeRating('author'));
 
     fetchReview();
-  }, []);
+  }, [dispatch, reviewId]);
 
   useEffect(() => {
     const lastTool = tools[tools.length - 1];
     if (tools.length > 0 && lastTool.type === 'header') {
       const isLastHeader = headers.filter((item) => item.id === lastTool.id);
-      console.log(isLastHeader);
       if (isLastHeader.length === 0) {
         dispatch(addHeaders({ id: lastTool.id, header }));
         setHeader('');
       }
     }
-  }, [tools]);
+    // eslint-disable-next-line
+  }, [tools, dispatch]);
 
   useEffect(() => {
     const lastTool = tools[tools.length - 1];
     if (tools.length > 0 && lastTool.type === 'text') {
       const isLastText = texts.filter((item) => item.id === lastTool.id);
-      console.log(isLastText);
       if (isLastText.length === 0) {
         dispatch(addText({ id: lastTool.id, text }));
         setText('');
       }
     }
+    // eslint-disable-next-line
   }, [tools]);
 
   // useEffect(() => {

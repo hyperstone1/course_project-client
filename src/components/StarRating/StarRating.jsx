@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import './index.scss';
-import { AiOutlineStar, AiFillStar } from 'react-icons/ai';
+import { AiFillStar } from 'react-icons/ai';
 import { useDispatch, useSelector } from 'react-redux';
-import { setRating, setHover, clearExistRating } from '../../store/slices/reviewSlice/review';
+import { setRating, setHover } from '../../store/slices/reviewSlice/review';
 const StarRating = () => {
   const dispatch = useDispatch();
   const { rating, hoverRating, existRating, typeRating } = useSelector((state) => state.review);
-  // const [hover, setHover] = useState(0);
 
   const handleSetRating = (index) => {
     dispatch(setRating({ rating: index }));

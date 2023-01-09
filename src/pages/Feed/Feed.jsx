@@ -2,14 +2,12 @@ import React, { useState, useEffect } from 'react';
 import BestReviews from '../../components/BestReviews/BestReviews';
 import LastReviews from '../../components/LastReviews/LastReviews';
 import Filter from '../../components/Filter/Filter';
-import CardReview from '../../components/CardReview/CardReview';
-import Row from 'react-bootstrap/Row';
+
 import './index.scss';
-import { getLatestReviews, getBestReviews, getAllReviews } from '../../http/reviewsAPI';
+import { getAllReviews } from '../../http/reviewsAPI';
 import Swal from 'sweetalert2';
 import { useDispatch, useSelector } from 'react-redux';
-import jwtDecode from 'jwt-decode';
-import { setUser } from '../../store/slices/user/userSlice';
+
 import { AiOutlineArrowRight } from 'react-icons/ai';
 import { useNavigate } from 'react-router-dom';
 import { setReviewLikes } from '../../store/slices/reviewSlice/review';
@@ -23,9 +21,8 @@ const Feed = () => {
   const userId = useSelector((state) => state.user.id);
   const navigate = useNavigate();
   const [reviews, setReviews] = useState([]);
-  const [latestReviews, setLatestReviews] = useState();
   const [likesByUser, setLikesByUser] = useState([]);
-  const { reviewLikes, userLikes, existRating } = useSelector((state) => state.review);
+  const { existRating } = useSelector((state) => state.review);
   const [users, setUsers] = useState([]);
   const lang = useSelector((state) => state.header.language);
 
@@ -64,16 +61,12 @@ const Feed = () => {
 
   useEffect(() => {
     if (reviews.length > 0) {
-      reviews.map((item) => {
-        dispatch(setReviewLikes({ id: item.id, likes: item.likes }));
-      });
+      reviews.map((item) => dispatch(setReviewLikes({ id: item.id, likes: item.likes })));
     }
     if (likesByUser.length > 0) {
-      likesByUser.map((item) => {
-        dispatch(setUserLikes({ id: item.idReview }));
-      });
+      likesByUser.map((item) => dispatch(setUserLikes({ id: item.idReview })));
     }
-  }, [reviews, likesByUser]);
+  }, [reviews, likesByUser, dispatch]);
 
   const handleClickShow = () => {
     navigate(`${filter}/`);

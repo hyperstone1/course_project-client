@@ -50,7 +50,7 @@ const FormType = () => {
   };
 
   const validateForm = () => {
-    const { name, email, pass } = form;
+    const { email, pass } = form;
     const newErrors = {};
     if (!email || email === '') newErrors.email = 'Please enter your email';
     else if (
@@ -181,7 +181,6 @@ const FormType = () => {
               />
             )}
           </Form.Group>
-
 
           <Button onClick={handleSubmit} variant="primary" type="submit">
             Log In

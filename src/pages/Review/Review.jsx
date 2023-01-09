@@ -202,7 +202,7 @@ const Review = () => {
                   : null}
               </div>
               <div className="rating">
-                <h4>{lang == 'eng' ? 'Rating by author: ' : 'Оценка автора: '}</h4>
+                <h4>{lang === 'eng' ? 'Rating by author: ' : 'Оценка автора: '}</h4>
                 <div className="rating_number">
                   {review.rating}
                   <AiFillStar />

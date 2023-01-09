@@ -1,8 +1,5 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react';
-import Header from '../../components/Header/Header';
-import Footer from '../../components/Footer/Footer';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/esm/Button';
+import React, { useState, useRef, useEffect } from 'react';
+
 import debounce from 'lodash/debounce';
 import { useNavigate } from 'react-router-dom';
 import './index.scss';
@@ -37,18 +34,17 @@ const Search = ({ search }) => {
   }, [searchValue]);
 
   const handleInputChange = useCallback(
-    debounce((e) => {
-      const { value } = e.target;
-      if (searchValue.length < 3) return;
-      getSearchResult(searchValue).then((data) => {
-        console.log(data);
-        if (data.length < 1) {
-          setIsEmpty(true);
-        }
-        setSearchResults(data);
-        // setResults(data);
-      });
-    }, 800),
+    () =>
+      debounce(() => {
+        if (searchValue.length < 3) return;
+        getSearchResult(searchValue).then((data) => {
+          console.log(data);
+          if (data.length < 1) {
+            setIsEmpty(true);
+          }
+          setSearchResults(data);
+        });
+      }, 800),
     [searchValue],
   );
 

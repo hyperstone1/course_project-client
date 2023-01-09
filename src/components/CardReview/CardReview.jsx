@@ -4,7 +4,7 @@ import Col from 'react-bootstrap/Col';
 import { CgNotes } from 'react-icons/cg';
 import { FaRegComment } from 'react-icons/fa';
 import { AiOutlineLike, AiFillLike } from 'react-icons/ai';
-import { BsBookmark, BsFillBookmarkFill, BsChatFill } from 'react-icons/bs';
+import { BsBookmark, BsFillBookmarkFill } from 'react-icons/bs';
 import Loader from './Loader';
 import moment from 'moment';
 import { AiFillStar } from 'react-icons/ai';
@@ -50,13 +50,14 @@ const CardReview = ({
     } else {
       setLike(false);
     }
+    //eslint-disable-next-line
   }, [reviewLikes]);
 
   useEffect(() => {
     if (idUser && users) {
       users.filter((user) => (user.id === idUser ? setUserRating(user.rating) : null));
     }
-    console.log(userRating);
+    //eslint-disable-next-line
   }, [users]);
 
   const handleClickIcons = async (e, id) => {
@@ -65,9 +66,6 @@ const CardReview = ({
     if (saveSVG) {
       setSave(!save);
     } else if (likeSVG) {
-      // if (like) {
-      //   setLike(!like);
-      // }
       const likes = await likeReview(id, userId);
       if (likes.message) {
         Swal.fire({
@@ -82,11 +80,7 @@ const CardReview = ({
     }
   };
 
-  const handleClickLike = () => {};
-
   const handleClickReview = () => {
-    // const url = document.location.pathname;
-    // navigate(`${url}/${id}`);
     navigate(`/reviews/${id}`);
   };
 
@@ -98,12 +92,8 @@ const CardReview = ({
         : setTextReview(textJson.text);
       console.log(coverURL);
     }
+    //eslint-disable-next-line
   }, []);
-
-  // useEffect(() => {
-  //   const url = URL.createObjectURL(coverURL);
-  //   console.log(url);
-  // }, []);
 
   const handleLoaded = () => {
     setLoading(false);

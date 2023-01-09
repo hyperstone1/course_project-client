@@ -26,7 +26,6 @@ function App() {
   const location = useLocation();
 
   useEffect(() => {
-    const url = location.pathname;
     setPath(location.pathname);
     console.log('path: ', path);
     if (path) {
@@ -35,7 +34,7 @@ function App() {
         dispatch(clearReviewState());
       }
     }
-  }, [location]);
+  }, [location, dispatch, path]);
 
   useEffect(() => {
     console.log(window.location.pathname);
@@ -67,7 +66,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/profile" element={<Profile />} />
         <Route path={`reviews/:id`} element={<Review />} />
-        <Route path='/search' element={<Search />} />
+        <Route path="/search" element={<Search />} />
         {/* <Route path={`reviews/edit/:id`} element={<EditReview />} /> */}
         {/* <Route path={`games/:id`} element={<Review />} />
         <Route path={`music/:id`} element={<Review />} /> */}

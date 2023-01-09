@@ -16,13 +16,12 @@ import {
   deleteUrlImage,
 } from '../../store/slices/addReviewSlice/addReview';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import './index.scss';
 
 const SettingsTools = ({ type, id, imagesTool, setImagesTool }) => {
   const [settings, setSettings] = useState(false);
   const dispatch = useDispatch();
-  const { toolType } = useSelector((state) => state.addReview);
   const rootEl = useRef(null);
 
   useEffect(() => {

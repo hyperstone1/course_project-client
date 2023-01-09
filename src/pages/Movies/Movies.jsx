@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../../components/Header/Header';
 import MoviesMenu from '../../components/MoviesMenu/MoviesMenu';
 import { RiEqualizerLine } from 'react-icons/ri';
@@ -7,7 +7,6 @@ import CardReview from '../../components/CardReview/CardReview';
 import { Link } from 'react-router-dom';
 import './index.scss';
 import { getAllMovies } from '../../http/reviewsAPI';
-import Skeleton from './Skeleton';
 import { getUsers } from '../../http/userAPI';
 import { useSelector } from 'react-redux';
 import Search from '../Search/Search';
@@ -42,8 +41,6 @@ const Movies = () => {
     };
     getMovies();
   }, []);
-
-  const skeletons = [...new Array(6)].map((_, index) => <Skeleton key={index} />);
 
   return (
     <>

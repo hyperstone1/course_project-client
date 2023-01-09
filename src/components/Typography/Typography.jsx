@@ -11,8 +11,7 @@ import { setCounterId } from '../../store/slices/addReviewSlice/addReview';
 const Typography = ({ setHeader, setText }) => {
   const [plus, setPlus] = useState(false);
   const dispatch = useDispatch();
-  const { toolType, tools, counterId } = useSelector((state) => state.addReview);
-  const [idCounter, setIdCounter] = useState(tools.length);
+  const { toolType, counterId } = useSelector((state) => state.addReview);
   const rootEl = useRef(null);
 
   const handleClickPlus = () => {

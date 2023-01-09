@@ -28,9 +28,7 @@ const ProfileInfo = () => {
 
   const customStyles = {
     input: (styles) => {
-      {
-        return { ...styles, padding: '12px 0px' };
-      }
+      return { ...styles, padding: '12px 0px' };
     },
   };
 
