@@ -18,7 +18,7 @@ a {
 
 .info {
   width: 80%;
-  padding-left: 130px;
+  padding-left: 0px;
   h3 {
     margin: 0;
     margin-left: 20px;
@@ -119,4 +119,7 @@ a {
   align-items: center;
   justify-content: center;
   gap: 20px;
+}
+.profile_container {
+  gap: 50px;
 }

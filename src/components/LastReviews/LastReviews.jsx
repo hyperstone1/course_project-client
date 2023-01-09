@@ -8,7 +8,7 @@ import game from '../../images/games.jpg';
 import music from '../../images/music.jpg';
 import CardReview from '../CardReview/CardReview';
 
-const LastReviews = ({ reviews }) => {
+const LastReviews = ({ reviews, users }) => {
   // const reviews = [book, movie, game, music];
   const [lastReviews, setLastReviews] = useState();
   useEffect(() => {
@@ -21,7 +21,7 @@ const LastReviews = ({ reviews }) => {
 
   return (
     <Row xs={1} md={2} className="g-4">
-      {lastReviews && lastReviews.map((item, idx) => <CardReview {...item} />)}
+      {lastReviews && lastReviews.map((item, idx) => <CardReview {...item} users={users} />)}
     </Row>
   );
 };

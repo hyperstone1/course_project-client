@@ -113,7 +113,7 @@ export const updateReview = async (
   tags,
   headers,
   texts,
-  rating,
+  existRating,
   bufferImgs,
   bufferCover,
   imagesTool,
@@ -126,7 +126,7 @@ export const updateReview = async (
     tags,
     headers,
     texts,
-    rating,
+    existRating,
     bufferImgs,
     bufferCover: bufferCover ? [...bufferCover] : null,
     imagesTool,
@@ -162,3 +162,22 @@ export const ratingAuthor = async (userId, reviewId) => {
   console.log(data);
   return data;
 };
+
+export const getSearchResult = async (sentence) => {
+  const { data } = await axios.post(`${host}/api/reviews/search`, { sentence });
+  return data;
+};
+
+export const getComments = async (reviewId) => {
+  const { data } = await axios.post(`${host}/api/reviews/comments`, { idReview: reviewId });
+  return data;
+};
+
+export const sendComment = async (userId,
+  reviewId, name, comment) => {
+  const { data } = await axios.post(`${host}/api/reviews/send_comment`, { userId,
+    reviewId, name, comment });
+  return data;
+};
+
+

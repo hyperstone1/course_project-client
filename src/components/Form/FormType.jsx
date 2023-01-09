@@ -182,9 +182,6 @@ const FormType = () => {
             )}
           </Form.Group>
 
-          <Form.Group className="mb-3" controlId="formBasicCheckbox">
-            <Form.Check type="checkbox" label="Check me out" />
-          </Form.Group>
 
           <Button onClick={handleSubmit} variant="primary" type="submit">
             Log In
@@ -305,10 +302,6 @@ const FormType = () => {
               )}
               <Form.Control.Feedback type="invalid">{errors.pass}</Form.Control.Feedback>
             </InputGroup>
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="formBasicCheckbox">
-            <Form.Check type="checkbox" label="Check me out" />
           </Form.Group>
 
           <Button onClick={handleSubmit} variant="primary" type="submit">

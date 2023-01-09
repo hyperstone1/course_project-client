@@ -3,8 +3,6 @@ import './index.scss';
 import { FaUserAlt } from 'react-icons/fa';
 import Select from 'react-select';
 import countryList from 'react-select-country-list';
-import axios from 'axios';
-import { host } from '../../utils/constants';
 import { FaSadCry } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { getReviewByUser } from '../../http/reviewsAPI';
@@ -15,7 +13,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 const ProfileInfo = () => {
-  const [userInfo, setUserInfo] = useState();
   const [userReviews, setUserReviews] = useState([]);
   const [name, setName] = useState();
   const [lastName, setLastName] = useState();
@@ -27,7 +24,6 @@ const ProfileInfo = () => {
   const { token } = useSelector((state) => state.user);
   const options = useMemo(() => countryList().getData(), []);
   const dispatch = useDispatch();
-  const url = useSelector((state) => state.user.url);
   const navigate = useNavigate();
 
   const customStyles = {
@@ -37,76 +33,28 @@ const ProfileInfo = () => {
       }
     },
   };
+
   const handleLinkReview = (type, id) => {
-    // if (type === 'Кино') {
     dispatch(setUrl({ url: 'movies' }));
     navigate(`/reviews/${id}`);
-    // }
-    // if (type === 'Книги') {
-    //   navigate(`/books/${id}`);
-    // }
-    // if (type === 'Игры') {
-    //   navigate(`/games/${id}`);
-    // }
-    // if (type === 'Музыка') {
-    //   navigate(`/music/${id}`);
-    // }
   };
-
-  useEffect(() => {
-    // const { data } = axios.get(`${host}/api/user/getInfo`);
-    // setUserInfo(data);
-  }, []);
 
   useEffect(() => {
     if (token) {
       const { id } = jwtDecode(token);
       const fetchReviews = async () => {
         const data = await getReviewByUser(id);
-        setUserReviews(data);
+        setUserReviews(data.reviews);
         console.log(data);
       };
       fetchReviews();
     }
   }, [token]);
 
-  useEffect(() => {
-    setUserReviews(
-      userReviews.map((item) => {
-        // console.log(window.location.pathname);
-        if (item.type === 'Кино') {
-          item.url = '/movies';
-          // dispatch(setUrl('/movies'));
-          // console.log(document.location.search);
-        }
-        if (item.type === 'Игры') {
-          dispatch(setUrl('/games'));
-        }
-        if (item.type === 'Книги') {
-          dispatch(setUrl('/books'));
-        }
-        if (item.type === 'Музыка') {
-          dispatch(setUrl('/music'));
-        }
-      }),
-    );
-  }, []);
-
   const handleChangeCountry = (value) => {
     setCountry(value);
   };
 
-  const setInfoHandler = async () => {
-    // const { data } = await axios.post(`${host}/api/user/setInfo`, {
-    //   name,
-    //   lastName,
-    //   secondName,
-    //   country,
-    //   city,
-    //   phone,
-    // });
-    // console.log(data);
-  };
   return (
     <>
       {menuItem === 'info' && (
@@ -155,15 +103,13 @@ const ProfileInfo = () => {
               </div>
             </div>
 
-            <button onClick={setInfoHandler} className="btnSave">
-              Сохранить
-            </button>
+            <button className="btnSave">Сохранить</button>
           </div>
         </div>
       )}
       {menuItem === 'reviews' &&
-        (userReviews && userReviews.length > 0 ? (
-          <Table striped bordered hover size="sm">
+        (userReviews.length > 0 ? (
+          <Table striped bordered hover size="sm" style={{ marginTop: '59px' }}>
             <thead>
               <tr>
                 <th>id</th>

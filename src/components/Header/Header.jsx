@@ -29,22 +29,13 @@ const Header = () => {
   const [userName, setUserName] = useState('user');
 
   useEffect(() => {
-    console.log(lang);
-  }, [lang]);
-
-  useEffect(() => {
     const user = localStorage.getItem('token');
     if (user) {
       setUserName(jwt_decode(user).name);
       setIsUser(true);
-      console.log('user: ', user);
     }
-    // console.log('jwt_decode(user): ', jwt_decode(user).id);
   }, [logout, userName]);
 
-  const handleClickUser = () => {
-    setClickUser(!clickUser);
-  };
   const handleClickLogOut = () => {
     localStorage.clear();
     dispatch(removeUser());
@@ -75,29 +66,30 @@ const Header = () => {
           <Nav className="me-auto my-2 my-lg-0" style={{ maxHeight: '100px' }} navbarScroll>
             <Nav.Link>
               <Link className="menu-link" to="/">
-                Home
+                {lang === 'eng' ? 'Home' : 'Главная'}
+                
               </Link>
             </Nav.Link>
 
             <Nav.Link>
               <Link className="menu-link" to="/movies">
-                Movies
+                {lang === 'eng' ? 'Movies' : 'Кино'}
               </Link>
             </Nav.Link>
 
             <Nav.Link>
               <Link className="menu-link" to="/games">
-                Games
+                {lang === 'eng' ? 'Games' : 'Игры'}
               </Link>
             </Nav.Link>
             <Nav.Link>
               <Link className="menu-link" to="/books">
-                Books
+                {lang === 'eng' ? 'Books' : 'Книги'}
               </Link>
             </Nav.Link>
             <Nav.Link>
               <Link className="menu-link" to="/music">
-                Music
+                {lang === 'eng' ? 'Music' : 'Музыка'}
               </Link>
             </Nav.Link>
           </Nav>
@@ -160,17 +152,23 @@ const Header = () => {
               <NavDropdown title={userName} id="navbarScrollingDropdown">
                 <NavDropdown.Item>
                   <Link className="link_router" to="/profile">
-                    Profile
+                    {lang === 'eng' ? 'Profile' : 'Профиль'}
                   </Link>
                 </NavDropdown.Item>
 
-                <NavDropdown.Item onClick={handleClickLogOut}>Log out</NavDropdown.Item>
+                <NavDropdown.Item onClick={handleClickLogOut}>
+                  {lang === 'eng' ? 'Log out' : 'Выйти'}
+                </NavDropdown.Item>
               </NavDropdown>
             ) : (
               <NavDropdown title="user" id="navbarScrollingDropdown">
-                <NavDropdown.Item onClick={handleClickLogin}>Login</NavDropdown.Item>
+                <NavDropdown.Item onClick={handleClickLogin}>
+                  {lang === 'eng' ? 'Login' : 'Войти'}
+                </NavDropdown.Item>
 
-                <NavDropdown.Item onClick={handleClickSignUp}>Sign up</NavDropdown.Item>
+                <NavDropdown.Item onClick={handleClickSignUp}>
+                  {lang === 'eng' ? 'Sign up' : 'Зарегистрироваться'}
+                </NavDropdown.Item>
               </NavDropdown>
             )}
           </Nav>

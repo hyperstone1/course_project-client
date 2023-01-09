@@ -24,7 +24,12 @@ import Swal from 'sweetalert2';
 import jwtDecode from 'jwt-decode';
 import { getReview, updateReview } from '../../http/reviewsAPI';
 import { useParams, useNavigate } from 'react-router-dom';
-import { setTypeRating } from '../../store/slices/reviewSlice/review';
+import {
+  setTypeRating,
+  setExistRating,
+  clearRating,
+  setHover,
+} from '../../store/slices/reviewSlice/review';
 
 const EditReview = ({ edit, setEdit }) => {
   const [drag, setDrag] = useState(false);
@@ -33,7 +38,7 @@ const EditReview = ({ edit, setEdit }) => {
   const [previewCover, setPreviewCover] = useState('');
   const [results, setResults] = useState([]);
   const [title, setTitle] = useState('');
-  const [reviewType, setReviewType] = useState('Кино');
+  const [reviewType, setReviewType] = useState('Movies');
 
   const [bufferImgs, setBufferImgs] = useState([]);
   const [bufferCover, setBufferCover] = useState();
@@ -53,13 +58,17 @@ const EditReview = ({ edit, setEdit }) => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { tools, headers, texts, rating } = useSelector((state) => state.addReview);
+  const { tools, headers, texts } = useSelector((state) => state.addReview);
   const { token } = useSelector((state) => state.user);
-  const { id } = useSelector((state) => state.user);
-  const params = useParams();
-  const reviewId = params.id;
+  const { rating, existRating } = useSelector((state) => state.review);
+
+  const userId = useSelector((state) => state.user.id);
   const [content, setContent] = useState();
   const [path, setPath] = useState('');
+  const params = useParams();
+  const reviewId = params.id;
+  const lang = useSelector((state) => state.header.language);
+
 
   useEffect(() => {
     setImagesTool(tools.filter((tool) => tool.type === 'image'));
@@ -76,6 +85,8 @@ const EditReview = ({ edit, setEdit }) => {
       setPreviewCover(data[0].coverURL);
       setCoverImage(data[0].coverURL);
       setTags(data[0].tags);
+      dispatch(setExistRating({ rating: data[0].rating }));
+      dispatch(setHover(data[0].rating));
 
       await reviewsContent.map((item) => {
         if (item.type === 'text') {
@@ -249,7 +260,7 @@ const EditReview = ({ edit, setEdit }) => {
         tags,
         headers,
         texts,
-        rating,
+        existRating,
         bufferImgs,
         bufferCover,
         imagesTool,
@@ -278,6 +289,16 @@ const EditReview = ({ edit, setEdit }) => {
     dispatch(clearReviewState());
   };
 
+  const handleClickSave = async () => {
+    dispatch(setExistRating({ rating }));
+    dispatch(clearRating());
+  };
+
+  const handleClickCancel = () => {
+    dispatch(clearRating());
+    dispatch(setHover(existRating));
+  };
+
   useEffect(() => {
     console.log(tools);
   }, [tools]);
@@ -289,10 +310,10 @@ const EditReview = ({ edit, setEdit }) => {
       <Form>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Select value={reviewType} onChange={(e) => setReviewType(e.target.value)}>
-            <option>Кино</option>
-            <option>Игры</option>
-            <option>Книги</option>
-            <option>Музыка</option>
+            <option>Movies</option>
+            <option>Games</option>
+            <option>Books</option>
+            <option>Music</option>
           </Form.Select>
         </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -300,82 +321,10 @@ const EditReview = ({ edit, setEdit }) => {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             type="text"
-            placeholder="Заголовок"
+            placeholder={lang === 'eng' ? 'Title' : 'Заголовок'}
           />
         </Form.Group>
         <div className="editor">
-          {/* {content
-                ? content.map((item) => (
-                    <div key={item.id} className="content_tool">
-                      {item.type === 'header' ? (
-                        <h3
-                          key={item.id}
-                          ref={headerRef}
-                          contentEditable={true}
-                          className={item.header ? 'text' : 'text data-placeholder'}
-                          value={item.header}
-                          data-placeholder="Заголовок"
-                          onInput={(e) => handleEditTool(e, item.id, item.type)}
-                        />
-                      ) : null}
-                      {item.type === 'text' ? (
-                        <div
-                          key={item.id}
-                          contentEditable={true}
-                          className="text"
-                          value={item.text}
-                          onInput={(e) => handleEditTool(e, item.id, item.type)}
-                        />
-                      ) : null}
-                      {item.type === 'image' ? (
-                        <div className="image-tool">
-                          {drag ? (
-                            <div
-                              onDrop={(e) => onDropHandler(e, item.id)}
-                              onDragStart={(e) => dragStartHandler(e)}
-                              onDragLeave={(e) => dragLeaveHandler(e)}
-                              onDragOver={(e) => dragStartHandler(e)}
-                              className="images-review drop-area"
-                            >
-                              Отпустите файлы, чтобы загрузить их
-                            </div>
-                          ) : (
-                            <div
-                              className="images-review download-area"
-                              onDragStart={(e) => dragStartHandler(e)}
-                              onDragLeave={(e) => dragLeaveHandler(e)}
-                              onDragOver={(e) => dragStartHandler(e)}
-                            >
-                              {imagesTool.map((item, i) =>
-                                item.url ? (
-                                  <div key={item.id} className="preview-images">
-                                    {item.id === tool.id ? (
-                                      <img src={item.url} alt="img review" />
-                                    ) : null}
-                                  </div>
-                                ) : (
-                                  <div
-                                    key={item.id}
-                                    style={{
-                                      display: 'flex',
-                                      justifyContent: 'center',
-                                      alignItems: 'center',
-                                      flexDirection: 'column',
-                                      height: '100%',
-                                    }}
-                                  >
-                                    <FiDownload />
-                                    <p>Перетащите сюда изображение</p>
-                                  </div>
-                                ),
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      ) : null}
-                    </div>
-                  ))
-                : null} */}
           {tools.map((tool, id) => (
             <div key={tool.id} className="selected_tool">
               {texts && tool.type === 'text'
@@ -386,7 +335,6 @@ const EditReview = ({ edit, setEdit }) => {
                           key={obj.id}
                           contentEditable={true}
                           className="text"
-                          // value={obj.text}
                           suppressContentEditableWarning={true}
                           onBlur={(e) => handleEditTool(e, tool.id, tool.type)}
                         >
@@ -406,7 +354,7 @@ const EditReview = ({ edit, setEdit }) => {
                           contentEditable={true}
                           className={obj.header ? 'text' : 'text data-placeholder'}
                           value={obj.header}
-                          data-placeholder="Заголовок"
+                          data-placeholder={lang === 'eng' ? 'Title' : 'Заголовок'}
                           suppressContentEditableWarning={true}
                           onBlur={(e) => handleEditTool(e, tool.id, tool.type)}
                         >
@@ -425,7 +373,9 @@ const EditReview = ({ edit, setEdit }) => {
                       onDragOver={(e) => dragStartHandler(e)}
                       className="images-review drop-area"
                     >
-                      Отпустите файлы, чтобы загрузить их
+                      {lang === 'eng'
+                        ? 'Release the files to download them'
+                        : 'Отпустите файлы, чтобы загрузить их'}
                     </div>
                   ) : (
                     <div
@@ -451,7 +401,9 @@ const EditReview = ({ edit, setEdit }) => {
                             }}
                           >
                             <FiDownload />
-                            <p>Перетащите сюда изображение</p>
+                            <p>
+                              {lang === 'eng' ? 'Drag image here' : 'Перетащите изображение сюда'}
+                            </p>
                           </div>
                         ),
                       )}
@@ -459,12 +411,6 @@ const EditReview = ({ edit, setEdit }) => {
                   )}
                 </div>
               ) : null}
-              {/* {tool.type === 'text' || tool.type === 'header' ? (
-                    <div onClick={() => handleEditTool(tool.type, tool.id)} className="edit">
-                      <AiFillEdit />
-                    </div>
-                  ) : null} */}
-
               <SettingsTools
                 type={tool.type}
                 id={tool.id}
@@ -477,7 +423,7 @@ const EditReview = ({ edit, setEdit }) => {
         </div>
 
         <Form.Group className="mb-3 tags" controlId="formBasicEmail">
-          <Form.Label>Теги</Form.Label>
+          <Form.Label>Tags</Form.Label>
           <div className="tagger-container">
             {tags.map((tag, id) => (
               <span key={id} className="tagger-container__tag">
@@ -497,14 +443,16 @@ const EditReview = ({ edit, setEdit }) => {
                 onChange={(e) => handleOnChange(e)}
                 ref={inputEl}
                 type="text"
-                placeholder="Enter tag"
+                placeholder={lang === 'eng' ? 'Enter tag' : 'Введите тег'}
                 list="tags"
                 value={tag}
                 autoComplete="off"
               />
             </div>
           </div>
-          <Form.Text>Введите теги используя запятую.</Form.Text>
+          <Form.Text>
+            {lang === 'eng' ? 'Enter tags using a comma.' : 'Введите теги используя запятую.'}
+          </Form.Text>
         </Form.Group>
 
         {results.length > 0 && (
@@ -517,7 +465,9 @@ const EditReview = ({ edit, setEdit }) => {
           </datalist>
         )}
 
-        <h5 style={{ marginBottom: '15px' }}>Загрузите обложку</h5>
+        <h5 style={{ marginBottom: '15px' }}>
+          {lang === 'eng' ? 'Download cover image' : 'Загрузите обложку'}
+        </h5>
 
         {drag ? (
           <div
@@ -527,7 +477,9 @@ const EditReview = ({ edit, setEdit }) => {
             onDragOver={(e) => dragStartHandler(e)}
             className="cover drop-area"
           >
-            Отпустите файлы, чтобы загрузить их
+            {lang === 'eng'
+              ? 'Release the files to download them'
+              : 'Отпустите файлы, чтобы загрузить их'}
           </div>
         ) : (
           <div
@@ -550,24 +502,32 @@ const EditReview = ({ edit, setEdit }) => {
                 }}
               >
                 <FiDownload />
-                <p>Перетащите сюда изображение</p>
+                <p>Drag image here</p>
               </div>
             )}
           </div>
         )}
         <div className="rating">
-          <h3>How would you rate it?</h3>
+          <h3>{lang === 'eng' ? 'How would you rate it?' : 'Как бы вы оценили?'}</h3>
           <StarRating rating={review.rating} />
+          {rating ? (
+            <div className="buttons">
+              <button className="save" onClick={handleClickSave}>
+                OK
+              </button>
+              <button className="cancel" onClick={handleClickCancel}>
+                {lang === 'eng' ? 'Cancel' : 'Отмена'}
+              </button>
+            </div>
+          ) : null}
         </div>
         <Button onClick={handleSendReview} variant="outline-success">
-          Save
+          {lang === 'eng' ? 'Save' : 'Сохранить'}
         </Button>
         <Button onClick={handleCancelChanges} variant="outline-success">
-          Cancel
+          {lang === 'eng' ? 'Cancel' : 'Отмена'}
         </Button>
       </Form>
-      {/* </div>
-      </div> */}
     </>
   );
 };

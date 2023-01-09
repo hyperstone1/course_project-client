@@ -1,0 +1,23 @@
+.content_result {
+  position: absolute;
+  z-index: 11;
+  background: white;
+  right: 93px;
+  top: 88px;
+  .result {
+    position: relative;
+    padding: 20px;
+    border-bottom: 1px solid #e3e3e3;
+    cursor: pointer;
+    transition: 0.4s;
+    &:hover {
+      background-color: #acc8e5;
+      color: #112a46;
+    }
+  }
+  .result_empty {
+    position: relative;
+    padding: 20px;
+    border-bottom: 1px solid #e3e3e3;
+  }
+}

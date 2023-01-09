@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { getAllTags } from '../../http/reviewsAPI';
 import './index.scss';
+import { useSelector } from 'react-redux';
 
 const Tags = () => {
+  const lang = useSelector((state) => state.header.language);
   const [tags, setTags] = useState([]);
   useEffect(() => {
     const fetchTags = async () => {
@@ -15,7 +17,7 @@ const Tags = () => {
 
   return tags.length > 0 ? (
     <div style={{ textAlign: 'center' }}>
-      <h2 style={{ textAlign: 'center' }}>Tags</h2>
+      <h2 style={{ textAlign: 'center' }}>{lang === 'eng' ? 'Tags' : 'Теги'}</h2>
       <div className="tags_container">
         {tags.map((item) => (
           <span className="tag">{item.tag}</span>

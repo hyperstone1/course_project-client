@@ -7,12 +7,26 @@ import Row from 'react-bootstrap/Row';
 import CardReview from '../../components/CardReview/CardReview';
 import { Link } from 'react-router-dom';
 import { getAllBooks } from '../../http/reviewsAPI';
+import { getUsers } from '../../http/userAPI';
+import { useSelector } from 'react-redux';
 
 const Books = () => {
   const [openEqualizer, setOpenEqualizer] = useState(false);
   const [search, setSearch] = useState(false);
   const [books, setBooks] = useState([]);
   const ref = useRef(null);
+  const [users, setUsers] = useState([]);
+  const { existRating } = useSelector((state) => state.review);
+  const lang = useSelector((state) => state.header.language);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const allUsers = await getUsers();
+      console.log(allUsers);
+      setUsers(allUsers);
+    };
+    fetchUsers();
+  }, [existRating]);
 
   const animationSearch = () => {
     setSearch(!search);
@@ -47,13 +61,13 @@ const Books = () => {
       <div className="container">
         <div className="container_movies">
           <div className="title">
-            <h4>Book reviews</h4>
+            <h4>{lang === 'eng' ? 'Book reviews' : 'Обзоры книг'}</h4>
             <div ref={ref} className={'search_input'}>
               <input type="text" placeholder="Search..." />
             </div>
             <div className="options">
               <button className="create_review">
-                <Link to="/movies/add"> Create review</Link>
+                <Link to="/movies/add">{lang === 'eng' ? 'Create review' : 'Создать обзор'} </Link>
               </button>
 
               <div onClick={animationSearch} className="search">
@@ -69,7 +83,7 @@ const Books = () => {
           </div>
           <MoviesMenu openEqualizer={openEqualizer} />
           <Row xs={1} md={2} className="g-4">
-            {books && books.map((book) => <CardReview {...book} />)}
+            {books && books.map((book) => <CardReview {...book} users={users} />)}
           </Row>
         </div>
       </div>

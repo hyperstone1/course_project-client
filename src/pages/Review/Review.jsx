@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import moment from 'moment';
@@ -18,6 +18,10 @@ import {
   setHover,
   setTypeRating,
 } from '../../store/slices/reviewSlice/review';
+import { getUser } from '../../http/userAPI';
+import ReactMarkdown from 'react-markdown';
+import { getComments, sendComment } from '../../http/reviewsAPI';
+import jwtDecode from 'jwt-decode';
 
 const Review = () => {
   const [content, setContent] = useState();
@@ -26,14 +30,55 @@ const Review = () => {
   const [edit, setEdit] = useState(false);
   const { token } = useSelector((state) => state.user);
   const [review, setReview] = useState();
+  const [comments, setComments] = useState([]);
   const params = useParams();
   const reviewId = params.id;
   const { rating, existRating } = useSelector((state) => state.review);
   const dispatch = useDispatch();
+  const [userRating, setUserRating] = useState();
+  const [comment, setComment] = useState('');
+  const refComment = useRef(null);
+  const lang = useSelector((state) => state.header.language);
 
   const handleLikeReview = () => {
     setLike(!like);
   };
+
+  useEffect(() => {
+    if (review) {
+      const fetchUser = async () => {
+        const user = await getUser(review.idUser);
+        console.log(user);
+        setUserRating(user[0].rating);
+      };
+      fetchUser();
+    }
+  }, [review]);
+
+  useEffect(() => {
+    if (reviewId) {
+      const interval = setInterval(() => {
+        const fetchComments = async () => {
+          const commentsReview = await getComments(reviewId);
+          console.log(commentsReview);
+          setComments(commentsReview);
+        };
+        fetchComments();
+      }, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [review, reviewId]);
+
+  // useEffect(() => {
+  //   if (reviewId) {
+  //     const fetchComments = async () => {
+  //       const commentsReview = await getComments(reviewId);
+  //       console.log(commentsReview);
+  //       setComments(commentsReview);
+  //     };
+  //     fetchComments();
+  //   }
+  // }, [review, reviewId]);
 
   useEffect(() => {
     if (userId) {
@@ -56,12 +101,12 @@ const Review = () => {
       setContent(reviewsContent);
     };
     fetchReview();
-  }, [rating, reviewId]);
+  }, [rating, reviewId, token]);
 
   const handleClickSave = async () => {
     const save = await ratingReview(userId, reviewId, rating);
-    dispatch(clearRating());
     dispatch(setExistRating({ rating }));
+    dispatch(clearRating());
 
     console.log(save);
   };
@@ -69,6 +114,27 @@ const Review = () => {
     dispatch(clearRating());
     dispatch(setHover(existRating));
   };
+
+  const handleSendComment = async () => {
+    if (token) {
+      const { name } = jwtDecode(token);
+      console.log(name);
+      await sendComment(userId, reviewId, name, comment);
+    }
+
+    setComment('');
+  };
+
+  const handleChangeComment = (e) => {
+    setComment(e.target.value);
+    autoResize();
+  };
+  function autoResize() {
+    const ref = refComment.current;
+    ref.style.height = 'auto';
+
+    ref.style.height = ref.scrollHeight + 'px';
+  }
 
   return review ? (
     <div className="review">
@@ -86,7 +152,13 @@ const Review = () => {
                     <div className="date">
                       {moment(review.createdAt).format('DD MMM YYYY hh:mm')}
                     </div>
-                    <div className="author">{review.userName}</div>
+                    <div className="author username_rating">
+                      <div className="user_rating">
+                        {userRating ? userRating : null}
+                        <AiFillStar />
+                      </div>
+                      <span className="username">{review.userName}</span>
+                    </div>
                   </div>
                   <div className="icons">
                     {userId === review.idUser ? (
@@ -115,7 +187,11 @@ const Review = () => {
                   ? content.map((item) => (
                       <div key={item.id} className="content_tool">
                         {item.type === 'header' ? <h2 className="header">{item.header}</h2> : null}
-                        {item.type === 'text' ? <div className="text">{item.text}</div> : null}
+                        {item.type === 'text' ? (
+                          <div className="text">
+                            <ReactMarkdown>{item.text}</ReactMarkdown>
+                          </div>
+                        ) : null}
                         {item.type === 'image' ? (
                           <div className="review_image">
                             <img src={item.url} alt={`reviewImage${item.id}`} />
@@ -126,7 +202,7 @@ const Review = () => {
                   : null}
               </div>
               <div className="rating">
-                <h4>Rating by author: </h4>
+                <h4>{lang == 'eng' ? 'Rating by author: ' : 'Оценка автора: '}</h4>
                 <div className="rating_number">
                   {review.rating}
                   <AiFillStar />
@@ -157,8 +233,33 @@ const Review = () => {
       {!edit ? (
         <div className="container">
           <div className="comments">
-            <h4>Comments</h4>
-            <div className="comments_container"></div>
+            <h4>{lang === 'eng' ? 'Comments' : 'Комментарии'}</h4>
+            <div className="comments_container">
+              {comments.length > 0
+                ? comments.map((item) => (
+                    <div className="comment">
+                      <div className="title_comment">
+                        <span className="username">{item.username}</span>
+                        {moment(item.createdAt).format('HH MM YYYY hh:mm ')}
+                      </div>
+                      <div className="comment_content">{item.comment}</div>
+                      <div className="answer">{lang === 'eng' ? 'Answer' : 'Ответить'}</div>
+                    </div>
+                  ))
+                : null}
+              <div className="comment_send">
+                <textarea
+                  ref={refComment}
+                  className="comment_textarea"
+                  type="text"
+                  value={comment}
+                  onChange={handleChangeComment}
+                />
+                <button className="send" onClick={handleSendComment}>
+                  {lang === 'eng' ? 'Send' : 'Отправить'}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       ) : null}

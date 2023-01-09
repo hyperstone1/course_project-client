@@ -7,12 +7,26 @@ import Row from 'react-bootstrap/Row';
 import CardReview from '../../components/CardReview/CardReview';
 import { Link } from 'react-router-dom';
 import { getAllMusic } from '../../http/reviewsAPI';
+import { getUsers } from '../../http/userAPI';
+import { useSelector } from 'react-redux';
 
 const Music = () => {
   const [openEqualizer, setOpenEqualizer] = useState(false);
   const [search, setSearch] = useState(false);
   const [music, setMusic] = useState([]);
   const ref = useRef(null);
+
+  const [users, setUsers] = useState([]);
+  const { existRating } = useSelector((state) => state.review);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const allUsers = await getUsers();
+      console.log(allUsers);
+      setUsers(allUsers);
+    };
+    fetchUsers();
+  }, [existRating]);
 
   const animationSearch = () => {
     setSearch(!search);
@@ -69,7 +83,7 @@ const Music = () => {
           </div>
           <MoviesMenu openEqualizer={openEqualizer} />
           <Row xs={1} md={2} className="g-4">
-            {music && music.map((item) => <CardReview {...item} />)}
+            {music && music.map((item) => <CardReview {...item} users={users} />)}
           </Row>
         </div>
       </div>

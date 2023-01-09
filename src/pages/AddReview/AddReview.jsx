@@ -33,7 +33,7 @@ const AddReview = () => {
   const [previewCover, setPreviewCover] = useState('');
   const [results, setResults] = useState([]);
   const [title, setTitle] = useState('');
-  const [reviewType, setReviewType] = useState('Кино');
+  const [reviewType, setReviewType] = useState('Movies');
 
   const [bufferImgs, setBufferImgs] = useState([]);
   const [bufferCover, setBufferCover] = useState();
@@ -53,9 +53,11 @@ const AddReview = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { tools, headers, texts, rating } = useSelector((state) => state.addReview);
+  const { tools, headers, texts } = useSelector((state) => state.addReview);
   const { token } = useSelector((state) => state.user);
   const { id } = useSelector((state) => state.user);
+  const { rating } = useSelector((state) => state.review);
+  const lang = useSelector((state) => state.header.language);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -250,7 +252,7 @@ const AddReview = () => {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: { error },
+        text: error,
       });
     }
   };
@@ -267,10 +269,10 @@ const AddReview = () => {
           <Form>
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <Form.Select value={reviewType} onChange={(e) => setReviewType(e.target.value)}>
-                <option>Кино</option>
-                <option>Игры</option>
-                <option>Книги</option>
-                <option>Музыка</option>
+                <option>Movies</option>
+                <option>Games</option>
+                <option>Books</option>
+                <option>Music</option>
               </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -278,7 +280,7 @@ const AddReview = () => {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 type="text"
-                placeholder="Заголовок"
+                placeholder={lang === 'eng' ? 'Title' : 'Заголовок'}
               />
             </Form.Group>
             <div className="editor">
@@ -309,7 +311,7 @@ const AddReview = () => {
                               contentEditable={true}
                               className={obj.header ? 'text' : 'text data-placeholder'}
                               value={obj.header}
-                              data-placeholder="Заголовок"
+                              data-placeholder={lang === 'eng' ? 'Title' : 'Заголовок'}
                               onInput={(e) => handleEditTool(e, tool.id, tool.type)}
                             />
                           ),
@@ -325,7 +327,9 @@ const AddReview = () => {
                           onDragOver={(e) => dragStartHandler(e)}
                           className="images-review drop-area"
                         >
-                          Отпустите файлы, чтобы загрузить их
+                          {lang === 'eng'
+                            ? 'Release the files to download them'
+                            : 'Отпустите файлы, чтобы загрузить их'}
                         </div>
                       ) : (
                         <div
@@ -353,7 +357,11 @@ const AddReview = () => {
                                 }}
                               >
                                 <FiDownload />
-                                <p>Перетащите сюда изображение</p>
+                                <p>
+                                  {lang === 'eng'
+                                    ? 'Drag image here'
+                                    : 'Перетащите изображение сюда'}
+                                </p>
                               </div>
                             ),
                           )}
@@ -361,12 +369,6 @@ const AddReview = () => {
                       )}
                     </div>
                   ) : null}
-                  {/* {tool.type === 'text' || tool.type === 'header' ? (
-                    <div onClick={() => handleEditTool(tool.type, tool.id)} className="edit">
-                      <AiFillEdit />
-                    </div>
-                  ) : null} */}
-
                   <SettingsTools type={tool.type} id={tool.id} />
                 </div>
               ))}
@@ -374,7 +376,7 @@ const AddReview = () => {
             </div>
 
             <Form.Group className="mb-3 tags" controlId="formBasicEmail">
-              <Form.Label>Теги</Form.Label>
+              <Form.Label>{lang === 'eng' ? 'Tags' : 'Теги'}</Form.Label>
               <div className="tagger-container">
                 {tags.map((tag, id) => (
                   <span key={id} className="tagger-container__tag">
@@ -401,7 +403,9 @@ const AddReview = () => {
                   />
                 </div>
               </div>
-              <Form.Text>Введите теги используя запятую.</Form.Text>
+              <Form.Text>
+                {lang === 'eng' ? 'Enter tags using a comma.' : 'Введите теги используя запятую.'}
+              </Form.Text>
             </Form.Group>
 
             {results.length > 0 && (
@@ -414,7 +418,9 @@ const AddReview = () => {
               </datalist>
             )}
 
-            <h5 style={{ marginBottom: '15px' }}>Загрузите обложку</h5>
+            <h5 style={{ marginBottom: '15px' }}>
+              {lang === 'eng' ? 'Download cover image' : 'Загрузите обложку'}
+            </h5>
 
             {drag ? (
               <div
@@ -424,7 +430,7 @@ const AddReview = () => {
                 onDragOver={(e) => dragStartHandler(e)}
                 className="cover drop-area"
               >
-                Отпустите файлы, чтобы загрузить их
+                Release the files to download them
               </div>
             ) : (
               <div
@@ -447,13 +453,13 @@ const AddReview = () => {
                     }}
                   >
                     <FiDownload />
-                    <p>Перетащите сюда изображение</p>
+                    <p>{lang === 'eng' ? 'Drag image here' : 'Перетащите изображение сюда'}</p>
                   </div>
                 )}
               </div>
             )}
             <div className="rating">
-              <h3>How would you rate it?</h3>
+              <h3>{lang === 'eng' ? 'How would you rate it?' : 'Как бы вы оценили?'}</h3>
               <StarRating />
             </div>
             <Button onClick={handleSendReview} variant="outline-success">

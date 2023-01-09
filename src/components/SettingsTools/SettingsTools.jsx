@@ -75,19 +75,19 @@ const SettingsTools = ({ type, id, imagesTool, setImagesTool }) => {
         <div className="toolbox">
           <li onClick={() => handleSelectTool('text')}>
             <RxText />
-            <span>Текст</span>
+            <span>Text</span>
           </li>
           <li onClick={() => handleSelectTool('header')}>
             <BiHeading />
-            <span>Заголовок</span>
+            <span>Header</span>
           </li>
           <li onClick={() => handleSelectTool('image')}>
             <BsImage />
-            <span>Изображение</span>
+            <span>Image</span>
           </li>
           <li onClick={() => handleDeleteTool()}>
             <MdDeleteForever />
-            <span>Удалить</span>
+            <span>Delete</span>
           </li>
         </div>
       )}

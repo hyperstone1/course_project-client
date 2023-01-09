@@ -2,23 +2,37 @@ import React, { useState, useRef, useEffect } from 'react';
 import Header from '../../components/Header/Header';
 import MoviesMenu from '../../components/MoviesMenu/MoviesMenu';
 import { RiEqualizerLine } from 'react-icons/ri';
-import { CiSearch } from 'react-icons/ci';
 import Row from 'react-bootstrap/Row';
 import CardReview from '../../components/CardReview/CardReview';
 import { Link } from 'react-router-dom';
 import './index.scss';
 import { getAllMovies } from '../../http/reviewsAPI';
 import Skeleton from './Skeleton';
+import { getUsers } from '../../http/userAPI';
+import { useSelector } from 'react-redux';
+import Search from '../Search/Search';
+import { CiSearch } from 'react-icons/ci';
 
 const Movies = () => {
   const [openEqualizer, setOpenEqualizer] = useState(false);
   const [search, setSearch] = useState(false);
   const [movies, setMovies] = useState([]);
-  const ref = useRef(null);
+  const [users, setUsers] = useState([]);
+  const { existRating } = useSelector((state) => state.review);
+  const lang = useSelector((state) => state.header.language);
 
   const animationSearch = () => {
     setSearch(!search);
   };
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const allUsers = await getUsers();
+      console.log(allUsers);
+      setUsers(allUsers);
+    };
+    fetchUsers();
+  }, [existRating]);
 
   useEffect(() => {
     const getMovies = async () => {
@@ -29,20 +43,6 @@ const Movies = () => {
     getMovies();
   }, []);
 
-  useEffect(() => {
-    const input = ref.current;
-    if (search) {
-      input.classList.add('active');
-    } else {
-      input.classList.add('closing');
-      setTimeout(() => {
-        input.classList.remove('active');
-
-        input.classList.remove('closing');
-      }, 1000);
-    }
-  }, [search]);
-
   const skeletons = [...new Array(6)].map((_, index) => <Skeleton key={index} />);
 
   return (
@@ -51,18 +51,16 @@ const Movies = () => {
       <div className="container">
         <div className="container_movies">
           <div className="title">
-            <h4>Movie reviews</h4>
-            <div ref={ref} className={'search_input'}>
-              <input type="text" placeholder="Search..." />
-            </div>
+            <h4>{lang === 'eng' ? 'Movie reviews' : 'Обзоры кино'}</h4>
+            <Search search={search} />
             <div className="options">
               <button className="create_review">
-                <Link to="/movies/add"> Create review</Link>
+                <Link to="/movies/add"> {lang === 'eng' ? 'Create review' : 'Создать обзор'}</Link>
               </button>
-
               <div onClick={animationSearch} className="search">
                 <CiSearch />
               </div>
+
               <div
                 onClick={() => setOpenEqualizer(!openEqualizer)}
                 className={openEqualizer ? 'equalizer shown' : 'equalizer'}
@@ -73,7 +71,7 @@ const Movies = () => {
           </div>
           <MoviesMenu openEqualizer={openEqualizer} />
           <Row xs={1} md={2} className="g-4">
-            {movies && movies.map((movie) => <CardReview {...movie} />)}
+            {movies && movies.map((movie) => <CardReview {...movie} users={users} />)}
           </Row>
         </div>
       </div>

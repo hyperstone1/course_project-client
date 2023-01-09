@@ -221,4 +221,24 @@ h5 {
   align-items: center;
   margin-top: 10px;
   margin-bottom: 15px;
+  .buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 15px;
+    .save,
+    .cancel {
+      padding: 8px 15px;
+      border: 1px solid rgb(78, 155, 78);
+      background-color: transparent;
+
+      border-radius: 5px;
+      color: rgb(78, 155, 78);
+      transition: 0.4s;
+      &:hover {
+        background-color: rgb(78, 155, 78);
+        color: white;
+      }
+    }
+  }
 }

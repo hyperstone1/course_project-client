@@ -14,29 +14,50 @@ import { useDispatch, useSelector } from 'react-redux';
 import { changeReviewLikes, changeUserLikes } from '../../store/slices/reviewSlice/review';
 import Swal from 'sweetalert2';
 import './index.scss';
+import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
 
-const CardReview = ({ id, userName, type, title, text, rating, coverURL, likes, createdAt }) => {
+const CardReview = ({
+  id,
+  idUser,
+  userName,
+  type,
+  title,
+  text,
+  rating,
+  coverURL,
+  likes,
+  createdAt,
+  users,
+}) => {
   const [like, setLike] = useState(false);
   const [save, setSave] = useState(false);
   const [textReview, setTextReview] = useState('');
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const idUser = useSelector((state) => state.user.id);
+  const userId = useSelector((state) => state.user.id);
   const [likesCount, setLikesCount] = useState(likes);
   const { reviewLikes, userLikes } = useSelector((state) => state.review);
   const img = useRef(null);
+  const [userRating, setUserRating] = useState();
 
   useEffect(() => {
     reviewLikes.map((item) => (item.id === id ? setLikesCount(item.likes) : null));
     const isExist = userLikes.filter((item) => item.idReview === id);
-    console.log(isExist);
+    console.log('users: ', users);
     if (isExist.length > 0) {
       setLike(true);
     } else {
       setLike(false);
     }
   }, [reviewLikes]);
+
+  useEffect(() => {
+    if (idUser && users) {
+      users.filter((user) => (user.id === idUser ? setUserRating(user.rating) : null));
+    }
+    console.log(userRating);
+  }, [users]);
 
   const handleClickIcons = async (e, id) => {
     const saveSVG = e.target.closest('.save');
@@ -47,7 +68,7 @@ const CardReview = ({ id, userName, type, title, text, rating, coverURL, likes, 
       // if (like) {
       //   setLike(!like);
       // }
-      const likes = await likeReview(id, idUser);
+      const likes = await likeReview(id, userId);
       if (likes.message) {
         Swal.fire({
           title: 'Sorry...',
@@ -104,10 +125,18 @@ const CardReview = ({ id, userName, type, title, text, rating, coverURL, likes, 
             <div className="title_review">
               <CgNotes /> <span>{type}</span>
             </div>
-            <span>{userName}</span>
+            <span className="username_rating">
+              <span className="user_rating">
+                {userRating}
+                <AiFillStar />
+              </span>
+              <span className="username">{userName}</span>
+            </span>
           </Card.Subtitle>
           <Card.Title>{title}</Card.Title>
-          <Card.Text>{textReview}</Card.Text>
+          <Card.Text>
+            <ReactMarkdown>{textReview}</ReactMarkdown>
+          </Card.Text>
           <Card.Text className="footer_card">
             <span>{moment(createdAt).format('DD MMM YYYY')}</span>
             <div className="icons" onClick={(e) => handleClickIcons(e, id)}>

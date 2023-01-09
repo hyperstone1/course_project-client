@@ -66,3 +66,14 @@
     border-bottom-left-radius: 5px;
   }
 }
+.username_rating {
+  display: flex;
+  gap: 5px;
+  .user_rating {
+    display: flex;
+    align-items: center;
+    svg {
+      fill: #faaf00;
+    }
+  }
+}

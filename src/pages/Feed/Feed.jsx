@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import { setReviewLikes } from '../../store/slices/reviewSlice/review';
 import { userAllLikes } from '../../http/userAPI';
 import { setUserLikes } from '../../store/slices/reviewSlice/review';
+import { getUsers } from '../../http/userAPI';
 
 const Feed = () => {
   const dispatch = useDispatch();
@@ -24,17 +25,22 @@ const Feed = () => {
   const [reviews, setReviews] = useState([]);
   const [latestReviews, setLatestReviews] = useState();
   const [likesByUser, setLikesByUser] = useState([]);
-  const { reviewLikes, userLikes } = useSelector((state) => state.review);
+  const { reviewLikes, userLikes, existRating } = useSelector((state) => state.review);
+  const [users, setUsers] = useState([]);
+  const lang = useSelector((state) => state.header.language);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const allUsers = await getUsers();
+      setUsers(allUsers);
+    };
+    fetchUsers();
+  }, [existRating]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // const bestReviews = await getBestReviews();
-        // const latestReviews = await getLatestReviews();
-        console.log('userId: ', userId);
         const allReviews = await getAllReviews();
-        console.log(allReviews);
-
         setReviews(allReviews);
       } catch ({ response }) {
         Swal.fire({
@@ -59,12 +65,10 @@ const Feed = () => {
   useEffect(() => {
     if (reviews.length > 0) {
       reviews.map((item) => {
-        console.log(item.id);
         dispatch(setReviewLikes({ id: item.id, likes: item.likes }));
       });
     }
     if (likesByUser.length > 0) {
-      console.log(likesByUser);
       likesByUser.map((item) => {
         dispatch(setUserLikes({ id: item.idReview }));
       });
@@ -79,29 +83,23 @@ const Feed = () => {
     <>
       <div className="container_feed">
         <div className="best_reviews">
-          <h4>Best reviews</h4>
-          <BestReviews />
+          <h4>{lang === 'eng' ? 'Best reviews' : 'Лучшие обзоры'}</h4>
+          <BestReviews users={users} />
         </div>
 
         <div className="filter">
-          <h4>Review type</h4>
-
-          {/* <Row xs={1} md={2} className="g-4 grid">
-            {Array.from({ length: 4 }).map(() => (
-              <CardReview />
-            ))}
-          </Row> */}
-          <Filter reviews={reviews} />
+          <h4>{lang === 'eng' ? 'Review type' : 'Тип обзора'}</h4>
+          <Filter reviews={reviews} users={users} />
           <div className="filter_cards">
             <div className="show_more" onClick={handleClickShow}>
-              Show more <AiOutlineArrowRight />
+              {lang === 'eng' ? 'Show more' : 'Показать больше'} <AiOutlineArrowRight />
             </div>
           </div>
         </div>
 
         <div className="last_reviews">
-          <h4>Last reviews</h4>
-          <LastReviews reviews={reviews} />
+          <h4> {lang === 'eng' ? 'Last reviews' : 'Последние обзоры'}</h4>
+          <LastReviews reviews={reviews} users={users} />
         </div>
       </div>
     </>
