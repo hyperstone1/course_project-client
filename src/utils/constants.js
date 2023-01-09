@@ -1,1 +1,1 @@
-export const host = 'https://courseprojectserver-production.up.railway.app:5000';
+export const host = 'https://jovial-kelpie-121aa5.netlify.app';
