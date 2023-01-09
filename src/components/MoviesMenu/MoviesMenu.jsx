@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './index.scss';
-import Button from 'react-bootstrap/Button';
-import Collapse from 'react-bootstrap/Collapse';
+
 import Select from 'react-select';
 
 const MoviesMenu = ({ openEqualizer }) => {
