@@ -1,17 +1,15 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import './index.scss';
 
 import Select from 'react-select';
 
 const MoviesMenu = ({ openEqualizer }) => {
-  const [open, setOpen] = useState();
   const refContainer = useRef(null);
   const refMenu = useRef(null);
 
   useEffect(() => {
     const container = refContainer.current;
     const menu = refMenu.current;
-    setOpen(openEqualizer);
     if (openEqualizer) {
       container.classList.add('active');
       menu.style.display = 'block';
@@ -23,8 +21,6 @@ const MoviesMenu = ({ openEqualizer }) => {
         container.classList.remove('active');
       }, 1000);
     }
-    console.log(openEqualizer);
-    console.log(open);
   }, [openEqualizer]);
 
   const filterGenres = [
