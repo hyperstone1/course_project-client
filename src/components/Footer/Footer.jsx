@@ -11,8 +11,8 @@ const Footer = () => {
         <Navbar.Toggle />
         <Navbar.Collapse className="justify-content-end">
           <Navbar.Text>
-            github:{' '}
-            <a href="https://github.com/hyperstone1" target="_blank">
+            github:
+            <a href="https://github.com/hyperstone1" rel="noreferrer" target="_blank">
               Nick Parfenchik
             </a>
           </Navbar.Text>
