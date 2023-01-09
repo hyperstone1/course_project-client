@@ -12,7 +12,7 @@ const LastReviews = ({ reviews }) => {
   // const reviews = [book, movie, game, music];
   const [lastReviews, setLastReviews] = useState();
   useEffect(() => {
-    if (reviews) {
+    if (reviews.length > 0) {
       const last = reviews.slice(reviews[reviews.length - 2], reviews[reviews.length]);
       console.log('last_reviews: ', last);
       setLastReviews(last);
@@ -21,9 +21,7 @@ const LastReviews = ({ reviews }) => {
 
   return (
     <Row xs={1} md={2} className="g-4">
-      {lastReviews && lastReviews.map((item, idx) => (
-        <CardReview {...item} />
-      ))}
+      {lastReviews && lastReviews.map((item, idx) => <CardReview {...item} />)}
     </Row>
   );
 };

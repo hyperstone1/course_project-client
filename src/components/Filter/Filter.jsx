@@ -21,7 +21,7 @@ const Filter = ({ reviews }) => {
     setKey(k);
   };
 
-  return reviews ? (
+  return reviews.length > 0 ? (
     <Tabs
       id="controlled-tab-example"
       activeKey={filterValue}

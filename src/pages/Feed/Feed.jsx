@@ -21,9 +21,9 @@ const Feed = () => {
   const filter = useSelector((state) => state.filter.filterValue);
   const userId = useSelector((state) => state.user.id);
   const navigate = useNavigate();
-  const [reviews, setReviews] = useState();
+  const [reviews, setReviews] = useState([]);
   const [latestReviews, setLatestReviews] = useState();
-  const [likesByUser, setLikesByUser] = useState();
+  const [likesByUser, setLikesByUser] = useState([]);
   const { reviewLikes, userLikes } = useSelector((state) => state.review);
 
   useEffect(() => {
@@ -57,13 +57,13 @@ const Feed = () => {
   }, [userId]);
 
   useEffect(() => {
-    if (reviews) {
+    if (reviews.length > 0) {
       reviews.map((item) => {
         console.log(item.id);
         dispatch(setReviewLikes({ id: item.id, likes: item.likes }));
       });
     }
-    if (likesByUser) {
+    if (likesByUser.length > 0) {
       console.log(likesByUser);
       likesByUser.map((item) => {
         dispatch(setUserLikes({ id: item.idReview }));

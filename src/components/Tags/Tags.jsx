@@ -3,7 +3,7 @@ import { getAllTags } from '../../http/reviewsAPI';
 import './index.scss';
 
 const Tags = () => {
-  const [tags, setTags] = useState();
+  const [tags, setTags] = useState([]);
   useEffect(() => {
     const fetchTags = async () => {
       const data = await getAllTags();
@@ -13,7 +13,7 @@ const Tags = () => {
     fetchTags();
   }, []);
 
-  return tags ? (
+  return tags.length > 0 ? (
     <div style={{ textAlign: 'center' }}>
       <h2 style={{ textAlign: 'center' }}>Tags</h2>
       <div className="tags_container">
