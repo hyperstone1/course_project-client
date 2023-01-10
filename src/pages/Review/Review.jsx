@@ -251,7 +251,7 @@ const Review = () => {
           )}
         </div>
       </div>
-      {!edit ? (
+      {!edit && token ? (
         <div className="container">
           <div className="comments">
             <h4>{lang === 'eng' ? 'Comments' : 'Комментарии'}</h4>
