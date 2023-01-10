@@ -9,5 +9,8 @@ img {
   margin: 0 auto;
   .carousel {
     width: 100%;
+    .carousel-item {
+      cursor: pointer;
+    }
   }
 }

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import Nav from 'react-bootstrap/Nav';
 import { useDispatch, useSelector } from 'react-redux';
 import { setMenuValue } from '../../store/slices/profileSlice/profileSlice';
+import './index.scss';
 
 const ProfileMenu = () => {
   const dispatch = useDispatch();

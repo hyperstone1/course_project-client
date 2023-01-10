@@ -1,6 +1,9 @@
 .navbar {
+  background-color: rgba(33, 37, 41, 1) !important;
+
   .container {
     background-color: rgba(var(--bs-dark-rgb), var(--bs-bg-opacity)) !important;
+    box-shadow: none;
     min-height: 100% !important;
     margin: 0 auto;
   }

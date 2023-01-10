@@ -12,7 +12,7 @@ const Home = () => {
       <div className="container">
         <Feed />
       </div>
-      <div className="container">
+      <div className="container tags__container">
         <Tags />
       </div>
       <Footer />

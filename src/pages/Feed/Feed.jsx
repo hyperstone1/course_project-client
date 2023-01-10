@@ -90,7 +90,7 @@ const Feed = () => {
           </div>
         </div>
 
-        <div className="last_reviews">
+        <div className="last_reviews" >
           <h4> {lang === 'eng' ? 'Last reviews' : 'Последние обзоры'}</h4>
           <LastReviews reviews={reviews} users={users} />
         </div>

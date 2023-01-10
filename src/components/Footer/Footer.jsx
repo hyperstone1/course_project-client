@@ -7,11 +7,11 @@ const Footer = () => {
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>
-        <Navbar.Brand href="#header">Navbar with text</Navbar.Brand>
+        <Navbar.Brand href="#header">©2023 Nick Parfenchik</Navbar.Brand>
         <Navbar.Toggle />
         <Navbar.Collapse className="justify-content-end">
           <Navbar.Text>
-            github:
+            github:{' '}
             <a href="https://github.com/hyperstone1" rel="noreferrer" target="_blank">
               Nick Parfenchik
             </a>
