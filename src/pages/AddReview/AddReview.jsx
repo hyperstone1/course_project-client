@@ -24,7 +24,7 @@ import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
 import { setUser } from '../../store/slices/user/userSlice';
-import { clearHover, clearRating } from '../../store/slices/reviewSlice/review';
+import { clearHover, clearRating, setTypeRating } from '../../store/slices/reviewSlice/review';
 
 const AddReview = () => {
   const [drag, setDrag] = useState(false);
@@ -63,6 +63,7 @@ const AddReview = () => {
       const user = jwtDecode(localStorage.getItem('token'));
       dispatch(setUser({ id: user.id, email: user.email, token }));
     }
+    dispatch(setTypeRating('author'));
     dispatch(clearRating());
     dispatch(clearHover());
     // eslint-disable-next-line

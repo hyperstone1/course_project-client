@@ -90,21 +90,21 @@
       .header {
         text-align: center;
         margin-top: 15px;
-        margin-bottom: 00px;
+        margin-bottom: 10px;
       }
       .review_image {
         width: 100%;
         img {
-          min-width: 100%;
-          max-height: fit-content;
+          height: 100%;
+          width: 100%;
         }
       }
       .cover_image {
         min-width: none;
         margin: 0;
         img {
-          min-width: 100%;
-          max-height: fit-content;
+          height: 100%;
+          width: 100%;
         }
       }
     }

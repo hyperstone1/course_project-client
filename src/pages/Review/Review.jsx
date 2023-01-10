@@ -25,7 +25,7 @@ import jwtDecode from 'jwt-decode';
 
 const Review = () => {
   const [content, setContent] = useState();
-  const [like, setLike] = useState();
+  const [like, setLike] = useState(false);
   const userId = useSelector((state) => state.user.id);
   const [edit, setEdit] = useState(false);
   const { token } = useSelector((state) => state.user);
@@ -33,7 +33,7 @@ const Review = () => {
   const [comments, setComments] = useState([]);
   const params = useParams();
   const reviewId = params.id;
-  const { rating, existRating } = useSelector((state) => state.review);
+  const { rating, existRating, userLikes } = useSelector((state) => state.review);
   const dispatch = useDispatch();
   const [userRating, setUserRating] = useState();
   const [comment, setComment] = useState('');
@@ -44,6 +44,10 @@ const Review = () => {
   const handleLikeReview = () => {
     setLike(!like);
   };
+
+  useEffect(() => {
+    userLikes.map((item) => (item.idReview === reviewId ? setLike(true) : setLike(false)));
+  }, [userLikes, reviewId]);
 
   useEffect(() => {
     if (review) {
@@ -70,24 +74,17 @@ const Review = () => {
     }
   }, [review, reviewId]);
 
-  // useEffect(() => {
-  //   if (reviewId) {
-  //     const fetchComments = async () => {
-  //       const commentsReview = await getComments(reviewId);
-  //       console.log(commentsReview);
-  //       setComments(commentsReview);
-  //     };
-  //     fetchComments();
-  //   }
-  // }, [review, reviewId]);
-
   useEffect(() => {
     if (userId) {
       const fetchRating = async () => {
         const ratingReviewUser = await ratingByUser(userId, reviewId);
         console.log(ratingReviewUser);
-        dispatch(setExistRating({ rating: ratingReviewUser }));
-        dispatch(setHover(ratingReviewUser));
+        if (ratingReviewUser === 'not rated') {
+          dispatch(setExistRating({ rating: 0 }));
+        } else {
+          dispatch(setExistRating({ rating: ratingReviewUser }));
+          dispatch(setHover(ratingReviewUser));
+        }
       };
       fetchRating();
     }
@@ -104,12 +101,21 @@ const Review = () => {
     fetchReview();
   }, [rating, reviewId, token]);
 
+  useEffect(() => {
+    const fetchReview = async () => {
+      const { data, reviewsContent } = await getReview(reviewId);
+      console.log(data);
+      setReview(data[0]);
+      setContent(reviewsContent);
+    };
+    fetchReview();
+  }, [rating, reviewId, token]);
+
   const handleClickSave = async () => {
     const save = await ratingReview(userId, reviewId, rating).then(() => {
       dispatch(setExistRating({ rating }));
       dispatch(clearRating());
-    })
-
+    });
 
     console.log(save);
   };
