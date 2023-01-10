@@ -85,7 +85,7 @@ const CardReview = ({
   };
 
   useEffect(() => {
-    if (text) {
+    if (text.length > 0) {
       const textJson = JSON.parse(text[0]);
       textJson.text.length > 255
         ? setTextReview(`${textJson.text.slice(0, 255)} ...`)
