@@ -24,6 +24,7 @@ const CardReview = ({
   title,
   text,
   rating,
+  tags,
   coverURL,
   likes,
   createdAt,
@@ -126,6 +127,13 @@ const CardReview = ({
           <Card.Title>{title}</Card.Title>
           <Card.Text>
             <ReactMarkdown>{textReview}</ReactMarkdown>
+            <div className="tags_container">
+              {tags.map((item) => (
+                <span className="tag" style={{ margin: '3px' }}>
+                  {item}
+                </span>
+              ))}
+            </div>
           </Card.Text>
           <Card.Text className="footer_card">
             <span>{moment(createdAt).format('DD MMM YYYY')}</span>
