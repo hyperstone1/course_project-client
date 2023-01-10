@@ -17,7 +17,7 @@ import { clearReviewState } from './store/slices/addReviewSlice/addReview';
 import Games from './pages/Games/Games';
 import Books from './pages/Books/Books';
 import Music from './pages/Music/Music';
-import SearchTag from './pages/SearchTag/SearchTag';
+import SearchTag from './pages/Search/SearchTag';
 
 function App() {
   const isLogin = useSelector((state) => state.auth.isLogin);
