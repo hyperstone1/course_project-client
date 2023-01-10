@@ -3,7 +3,7 @@ import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import moment from 'moment';
 import { getReview, ratingByUser } from '../../http/reviewsAPI';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import './index.scss';
 import { AiFillHeart } from 'react-icons/ai';
 import { BsBookmark } from 'react-icons/bs';
@@ -39,6 +39,7 @@ const Review = () => {
   const [comment, setComment] = useState('');
   const refComment = useRef(null);
   const lang = useSelector((state) => state.header.language);
+  const navigate = useNavigate();
 
   const handleLikeReview = () => {
     setLike(!like);
@@ -104,9 +105,11 @@ const Review = () => {
   }, [rating, reviewId, token]);
 
   const handleClickSave = async () => {
-    const save = await ratingReview(userId, reviewId, rating);
-    dispatch(setExistRating({ rating }));
-    dispatch(clearRating());
+    const save = await ratingReview(userId, reviewId, rating).then(() => {
+      dispatch(setExistRating({ rating }));
+      dispatch(clearRating());
+    })
+
 
     console.log(save);
   };
@@ -135,6 +138,10 @@ const Review = () => {
 
     ref.style.height = ref.scrollHeight + 'px';
   }
+
+  const handleClickTag = (tag) => {
+    navigate(`/tag/${tag}`);
+  };
 
   return review ? (
     <div className="review">
@@ -200,6 +207,14 @@ const Review = () => {
                       </div>
                     ))
                   : null}
+              </div>
+
+              <div className="tags_container" style={{ marginTop: 0 }}>
+                {review.tags.map((tag) => (
+                  <span className="tag" onClick={() => handleClickTag(tag)}>
+                    {tag}
+                  </span>
+                ))}
               </div>
               <div className="rating">
                 <h4>{lang === 'eng' ? 'Rating by author: ' : 'Оценка автора: '}</h4>

@@ -9,7 +9,7 @@ import './index.scss';
 import { getAllMovies } from '../../http/reviewsAPI';
 import { getUsers } from '../../http/userAPI';
 import { useSelector } from 'react-redux';
-import Search from '../Search/Search';
+import Search from '../../components/Search/Search';
 import { CiSearch } from 'react-icons/ci';
 
 const Movies = () => {

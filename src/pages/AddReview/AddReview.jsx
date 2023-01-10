@@ -24,6 +24,7 @@ import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
 import { setUser } from '../../store/slices/user/userSlice';
+import { clearHover, clearRating } from '../../store/slices/reviewSlice/review';
 
 const AddReview = () => {
   const [drag, setDrag] = useState(false);
@@ -52,8 +53,7 @@ const AddReview = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { tools, headers, texts } = useSelector((state) => state.addReview);
-  const { token } = useSelector((state) => state.user);
-  const { id } = useSelector((state) => state.user);
+  const { token, id } = useSelector((state) => state.user);
   const { rating } = useSelector((state) => state.review);
   const lang = useSelector((state) => state.header.language);
 
@@ -63,6 +63,8 @@ const AddReview = () => {
       const user = jwtDecode(localStorage.getItem('token'));
       dispatch(setUser({ id: user.id, email: user.email, token }));
     }
+    dispatch(clearRating());
+    dispatch(clearHover());
     // eslint-disable-next-line
   }, []);
 
@@ -215,24 +217,37 @@ const AddReview = () => {
   const handleSendReview = async () => {
     const { name } = jwtDecode(token);
     try {
-      await createReview(
-        id,
-        name,
-        reviewType,
-        title,
-        tags,
-        headers,
-        texts,
-        rating,
-        bufferImgs,
-        bufferCover,
-      );
-      Swal.fire({
-        title: 'Successfully!',
-        text: 'Review successfully added.',
-      });
-      dispatch(clearReviewState());
-      navigate('/');
+      if (!title || !tags || !bufferCover || !rating) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Fill in the fields and upload the cover image',
+          text: '',
+        });
+      } else {
+        await createReview(
+          id,
+          name,
+          reviewType,
+          title,
+          tags,
+          headers,
+          texts,
+          rating,
+          bufferImgs,
+          bufferCover,
+        ).then((res) => {
+          Swal.fire({
+            title: 'Successfully!',
+            text: 'Review successfully added.',
+          });
+          dispatch(clearReviewState());
+          dispatch(clearHover());
+          dispatch(clearRating());
+          navigate('/');
+        });
+
+        console.log('review');
+      }
     } catch (error) {
       console.log(error);
       Swal.fire({
@@ -283,8 +298,7 @@ const AddReview = () => {
                       )
                     : null}
                   {tool.type === 'header'
-                    ? 
-                      headers.map(
+                    ? headers.map(
                         (obj) =>
                           obj.id === tool.id && (
                             // eslint-disable-next-line

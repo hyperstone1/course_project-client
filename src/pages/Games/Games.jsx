@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../../components/Header/Header';
 import MoviesMenu from '../../components/MoviesMenu/MoviesMenu';
 import { RiEqualizerLine } from 'react-icons/ri';
@@ -9,12 +9,12 @@ import { Link } from 'react-router-dom';
 import { getAllGames } from '../../http/reviewsAPI';
 import { getUsers } from '../../http/userAPI';
 import { useSelector } from 'react-redux';
+import Search from '../../components/Search/Search';
 
 const Games = () => {
   const [openEqualizer, setOpenEqualizer] = useState(false);
   const [search, setSearch] = useState(false);
   const [games, setGames] = useState([]);
-  const ref = useRef(null);
   const [users, setUsers] = useState([]);
   const { existRating } = useSelector((state) => state.review);
   const lang = useSelector((state) => state.header.language);
@@ -40,20 +40,6 @@ const Games = () => {
     getGames();
   }, []);
 
-  useEffect(() => {
-    const input = ref.current;
-    if (search) {
-      input.classList.add('active');
-    } else {
-      input.classList.add('closing');
-      setTimeout(() => {
-        input.classList.remove('active');
-
-        input.classList.remove('closing');
-      }, 1000);
-    }
-  }, [search]);
-
   return (
     <>
       <Header />
@@ -61,9 +47,8 @@ const Games = () => {
         <div className="container_movies">
           <div className="title">
             <h4>{lang === 'eng' ? 'Game reviews' : 'Обзоры игр'}</h4>
-            <div ref={ref} className={'search_input'}>
-              <input type="text" placeholder="Search..." />
-            </div>
+            <Search search={search} />
+
             <div className="options">
               <button className="create_review">
                 <Link to="/movies/add"> {lang === 'eng' ? 'Create review' : 'Создать обзор'}</Link>

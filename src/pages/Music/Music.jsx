@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState,  useEffect } from 'react';
 import Header from '../../components/Header/Header';
 import MoviesMenu from '../../components/MoviesMenu/MoviesMenu';
 import { RiEqualizerLine } from 'react-icons/ri';
@@ -9,12 +9,13 @@ import { Link } from 'react-router-dom';
 import { getAllMusic } from '../../http/reviewsAPI';
 import { getUsers } from '../../http/userAPI';
 import { useSelector } from 'react-redux';
+import Search from '../../components/Search/Search';
+
 
 const Music = () => {
   const [openEqualizer, setOpenEqualizer] = useState(false);
   const [search, setSearch] = useState(false);
   const [music, setMusic] = useState([]);
-  const ref = useRef(null);
 
   const [users, setUsers] = useState([]);
   const { existRating } = useSelector((state) => state.review);
@@ -41,19 +42,6 @@ const Music = () => {
     getMusic();
   }, []);
 
-  useEffect(() => {
-    const input = ref.current;
-    if (search) {
-      input.classList.add('active');
-    } else {
-      input.classList.add('closing');
-      setTimeout(() => {
-        input.classList.remove('active');
-
-        input.classList.remove('closing');
-      }, 1000);
-    }
-  }, [search]);
 
   return (
     <>
@@ -62,9 +50,7 @@ const Music = () => {
         <div className="container_movies">
           <div className="title">
             <h4>Music reviews</h4>
-            <div ref={ref} className={'search_input'}>
-              <input type="text" placeholder="Search..." />
-            </div>
+            <Search search={search} />
             <div className="options">
               <button className="create_review">
                 <Link to="/movies/add"> Create review</Link>

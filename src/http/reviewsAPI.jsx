@@ -35,6 +35,11 @@ export const getAllTags = async () => {
   const { data } = await axios.get(`${host}/api/reviews/tags`);
   return data;
 };
+export const getReviewsByTag = async (tag) => {
+  const { data } = await axios.post(`${host}/api/reviews/reviews_by_tag`, {tag});
+  return data;
+};
+
 
 export const createReview = async (
   id,
@@ -58,7 +63,7 @@ export const createReview = async (
     texts,
     rating,
     bufferImgs,
-    bufferCover: [...bufferCover],
+    bufferCover: bufferCover ? [...bufferCover] : null,
   });
   console.log(data);
   return data;
@@ -173,11 +178,12 @@ export const getComments = async (reviewId) => {
   return data;
 };
 
-export const sendComment = async (userId,
-  reviewId, name, comment) => {
-  const { data } = await axios.post(`${host}/api/reviews/send_comment`, { userId,
-    reviewId, name, comment });
+export const sendComment = async (userId, reviewId, name, comment) => {
+  const { data } = await axios.post(`${host}/api/reviews/send_comment`, {
+    userId,
+    reviewId,
+    name,
+    comment,
+  });
   return data;
 };
-
-

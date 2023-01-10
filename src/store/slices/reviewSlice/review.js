@@ -54,6 +54,9 @@ const reviewSlice = createSlice({
     setHover: (state, action) => {
       state.hoverRating = action.payload;
     },
+    clearHover: (state, action) => {
+      state.hoverRating = 0;
+    },
     clearRating: (state) => {
       state.rating = 0;
     },
@@ -75,5 +78,6 @@ export const {
   setExistRating,
   clearExistRating,
   setTypeRating,
+  clearHover,
 } = reviewSlice.actions;
 export default reviewSlice.reducer;

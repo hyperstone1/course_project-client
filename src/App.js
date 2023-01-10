@@ -17,7 +17,7 @@ import { clearReviewState } from './store/slices/addReviewSlice/addReview';
 import Games from './pages/Games/Games';
 import Books from './pages/Books/Books';
 import Music from './pages/Music/Music';
-import Search from './pages/Search/Search';
+import SearchTag from './pages/SearchTag/SearchTag';
 
 function App() {
   const isLogin = useSelector((state) => state.auth.isLogin);
@@ -66,11 +66,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/profile" element={<Profile />} />
         <Route path={`reviews/:id`} element={<Review />} />
-        <Route path="/search" element={<Search />} />
-        {/* <Route path={`reviews/edit/:id`} element={<EditReview />} /> */}
-        {/* <Route path={`games/:id`} element={<Review />} />
-        <Route path={`music/:id`} element={<Review />} /> */}
-        {/* <Route path={`${url}/:id`} element={<Review />} /> */}
+        <Route path={`/tag/:tag`} element={<SearchTag />} />
       </Routes>
     </div>
   );

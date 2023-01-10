@@ -1,11 +1,12 @@
 .tags_container {
-  margin-top: 20px;
+  padding-bottom: 10px;
   text-align: center;
   .tag {
+    display: inline-block;
     padding: 5px 10px;
     background-color: #e3e3e3;
     border-radius: 5px;
-    margin: 5px;
+    margin: 7px;
     cursor: pointer;
   }
 }

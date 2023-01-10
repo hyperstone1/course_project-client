@@ -3,3 +3,11 @@ img {
   margin: 0 auto;
   max-height: 500px;
 }
+.best_reviews_container {
+  position: relative;
+  width: 70%;
+  margin: 0 auto;
+  .carousel {
+    width: 100%;
+  }
+}
