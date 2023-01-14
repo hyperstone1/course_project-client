@@ -36,10 +36,9 @@ export const getAllTags = async () => {
   return data;
 };
 export const getReviewsByTag = async (tag) => {
-  const { data } = await axios.post(`${host}/api/reviews/reviews_by_tag`, {tag});
+  const { data } = await axios.post(`${host}/api/reviews/reviews_by_tag`, { tag });
   return data;
 };
-
 
 export const createReview = async (
   id,

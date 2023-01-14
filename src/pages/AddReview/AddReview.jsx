@@ -218,7 +218,7 @@ const AddReview = () => {
   const handleSendReview = async () => {
     const { name } = jwtDecode(token);
     try {
-      if (!title || !tags || !bufferCover || !rating) {
+      if (!title || tags.length < 1 || !bufferCover || !rating) {
         Swal.fire({
           icon: 'error',
           title: 'Fill in the fields and upload the cover image',
